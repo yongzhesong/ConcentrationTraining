@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>专注力和反应力训练 - 结果</title>
+  <style>
+    /* ========== 全局 ========== */
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    :root {
+      --bg-deep:  #05070d;
+      --bg-panel: #0c1220;
+      --bg-elev:  #141c33;
+      --border:   #1f2a4a;
+      --glow:     rgba(60, 140, 255, 0.4);
+      --text-main:#e6edf5;
+      --text-sub: #8899b4;
+      --accent:   #3a8cff;
+      --ok:       #3ddc97;
+      --warn:     #ffb24a;
+      --danger:   #ff5c7a;
+    }
+    html, body {
+      height: 100%; width: 100%;
+      background: radial-gradient(ellipse at top, #0b1530 0%, var(--bg-deep) 60%) no-repeat fixed;
+      color: var(--text-main);
+      font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow-x: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+    body {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      position: relative;
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px);
+      pointer-events: none;
+    }
+
+    /* ========== 面板 ========== */
+    .panel {
+      position: relative; z-index: 1;
+      width: 100%;
+      max-width: 560px;
+      background: linear-gradient(180deg, #0f1830 0%, #080e1e 100%);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px 28px 28px;
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(60,140,255,0.08) inset;
+    }
+    .panel::before {
+      content: ""; position: absolute; inset: 0;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(60,140,255,0.18), transparent 40%, transparent 60%, rgba(120,60,255,0.14));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+      padding: 1px; pointer-events: none;
+    }
+
+    /* ========== 标题 ========== */
+    .tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(58,140,255,0.1);
+      border: 1px solid rgba(58,140,255,0.25);
+      color: var(--accent);
+      font-size: 11px; letter-spacing: 3px;
+      padding: 4px 12px; border-radius: 999px;
+    }
+    .title {
+      margin-top: 14px;
+      font-size: 28px; font-weight: 700;
+      background: linear-gradient(90deg, #fff 0%, #a8c5ff 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      margin-top: 6px;
+      font-size: 13px; color: var(--text-sub);
+    }
+
+    /* ========== 最终成绩大字 ========== */
+    .score-card {
+      margin-top: 28px;
+      background: linear-gradient(135deg, rgba(58,140,255,0.08) 0%, rgba(120,60,255,0.06) 100%);
+      border: 1px solid rgba(60,140,255,0.2);
+      border-radius: 14px;
+      padding: 28px 20px;
+      text-align: center;
+      position: relative;
+    }
+    .score-card::after {
+      content: ""; position: absolute; left: 50%; bottom: -1px;
+      width: 60%; height: 1px; transform: translateX(-50%);
+      background: linear-gradient(90deg, transparent, rgba(60,140,255,0.5), transparent);
+    }
+    .score-label {
+      font-size: 11px; letter-spacing: 4px; color: var(--text-sub);
+      margin-bottom: 10px;
+    }
+    .final-score {
+      font-size: 72px; font-weight: 800; line-height: 1;
+      font-variant-numeric: tabular-nums;
+      background: linear-gradient(180deg, #ffffff 0%, #6aa8ff 70%, #3a8cff 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 60px var(--glow);
+      filter: drop-shadow(0 4px 24px var(--glow));
+    }
+    .final-score .unit {
+      font-size: 22px; font-weight: 600;
+      vertical-align: 1.2em;
+      margin-left: 4px;
+    }
+    .raw-score {
+      margin-top: 10px;
+      font-size: 14px; color: var(--text-sub);
+    }
+    .raw-score b { color: var(--ok); font-size: 18px; font-weight: 700; margin: 0 4px; }
+
+    /* ========== 统计信息 ========== */
+    .stats {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .stat {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+    .stat .lbl {
+      font-size: 10px; color: var(--text-sub);
+      letter-spacing: 2px; margin-bottom: 6px;
+    }
+    .stat .val {
+      font-size: 22px; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+    .stat.accuracy .val { color: var(--ok); }
+    .stat.time .val { color: var(--accent); }
+    .stat.totalled .val { color: var(--warn); }
+
+    /* ========== 公式说明 ========== */
+    .formula {
+      margin-top: 20px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.02);
+      border: 1px dashed rgba(136,153,180,0.25);
+      border-radius: 10px;
+      font-size: 12px; color: var(--text-sub);
+      line-height: 1.7;
+    }
+    .formula b { color: var(--text-main); font-weight: 600; }
+    .formula kbd {
+      display: inline-block;
+      padding: 1px 6px;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      color: var(--accent);
+      font-size: 11px;
+    }
+
+    /* ========== 重新开始按钮 ========== */
+    .btn-wrap { margin-top: 26px; display: flex; justify-content: center; }
+    .btn-restart {
+      position: relative;
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px;
+      width: 100%; max-width: 360px;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #3a8cff 0%, #5b6cff 100%);
+      color: #fff;
+      border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 700;
+      cursor: pointer;
+      box-shadow:
+        0 8px 22px rgba(58,140,255,0.35),
+        0 0 0 1px rgba(255,255,255,0.1) inset;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      overflow: hidden;
+    }
+    .btn-restart:hover { filter: brightness(1.1); box-shadow: 0 10px 28px rgba(58,140,255,0.45); }
+    .btn-restart:active { transform: translateY(1px); filter: brightness(0.95); }
+    .btn-restart::after {
+      content: ""; position: absolute;
+      top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: btn-shine 2.8s infinite;
+    }
+    @keyframes btn-shine { 0% { left: -100% } 50% { left: 100% } 100% { left: 100% } }
+    .btn-restart svg { width: 18px; height: 18px; }
+
+    /* ========== 响应式 ========== */
+    @media (max-width: 480px) {
+      body { padding: 14px; align-items: flex-start; padding-top: 40px; }
+      .panel { padding: 24px 20px; }
+      .title { font-size: 22px; }
+      .final-score { font-size: 60px; }
+      .stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .stat { padding: 12px 6px; }
+      .stat .val { font-size: 18px; }
+      .formula { font-size: 11px; line-height: 1.65; }
+    }
+    @media (orientation: landscape) and (max-height: 520px) {
+      body { padding: 12px; }
+      .panel { padding: 20px 24px; max-width: 720px; }
+      .score-card { margin-top: 16px; padding: 20px; }
+      .final-score { font-size: 56px; }
+      .stats { margin-top: 14px; }
+      .btn-wrap { margin-top: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <span class="tag">RESULT · REPORT</span>
+    <h1 class="title">专注力和反应力训练结果</h1>
+    <p class="subtitle">以下为本次训练成绩分析，建议坚持每日练习</p>
+
+    <!-- 最终成绩大字 -->
+    <div class="score-card">
+      <div class="score-label">最 终 成 绩</div>
+      <div class="final-score" id="finalScore">--<span class="unit">分</span></div>
+      <div class="raw-score">本轮总得分为 <b id="rawScore">--</b> 分</div>
+    </div>
+
+    <!-- 统计信息卡片 -->
+    <div class="stats">
+      <div class="stat time">
+        <div class="lbl">有效时长</div>
+        <div class="val" id="actualTime">--</div>
+      </div>
+      <div class="stat totalled">
+        <div class="lbl">操作灯总数</div>
+        <div class="val" id="totalLED">--</div>
+      </div>
+      <div class="stat accuracy">
+        <div class="lbl">正确率</div>
+        <div class="val" id="accuracy">--</div>
+      </div>
+    </div>
+
+    <!-- 公式说明 -->
+    <div class="formula" id="formulaBox"></div>
+
+    <!-- 重新开始按钮 -->
+    <div class="btn-wrap">
+      <button class="btn-restart" id="restartBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 3-6.7L3 8"/>
+          <polyline points="3 3 3 8 8 8"/>
+        </svg>
+        重新开始（回到规则界面）
+      </button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      function loadResult() {
+        try {
+          var raw = localStorage.getItem('batak.gameResult');
+          if (raw) {
+            var r = JSON.parse(raw);
+            if (r && typeof r.score === 'number' && typeof r.actualGameTime === 'number') {
+              return r;
+            }
+          }
+        } catch (e) {}
+        return null;
+      }
+
+      function render() {
+        var r = loadResult();
+        if (!r) {
+          document.getElementById('finalScore').innerHTML = '<span class="unit">数据缺失</span>';
+          document.getElementById('rawScore').textContent = '--';
+          document.getElementById('actualTime').textContent = '--';
+          document.getElementById('totalLED').textContent = '--';
+          document.getElementById('accuracy').textContent = '--';
+          document.getElementById('formulaBox').innerHTML =
+            '未找到本轮游戏结果。请先完成一局训练。<br/>请点击下方按钮回到规则界面开始训练。';
+          return;
+        }
+
+        // 防止除 0
+        var actualTime = Math.max(0.001, r.actualGameTime || 0);
+        var totalLEDs  = Math.max(1, r.totalOpLEDs || 0);
+        var score      = Math.max(0, r.score || 0);
+
+        // 最终成绩公式：(得分/时间) × (得分/操作灯总数)^3 × 100
+        var speedRatio   = score / actualTime;
+        var accuracyRatio = score / totalLEDs;
+        var finalScore   = speedRatio * Math.pow(accuracyRatio, 3) * 100;
+        finalScore = Math.max(0, finalScore);
+
+        // 正确率
+        var accuracyPct = Math.min(100, accuracyRatio * 100);
+
+        // 渲染
+        document.getElementById('finalScore').innerHTML = finalScore.toFixed(2) + '<span class="unit">分</span>';
+        document.getElementById('rawScore').textContent = score;
+        document.getElementById('actualTime').textContent = actualTime.toFixed(1) + 's';
+        document.getElementById('totalLED').textContent = totalLEDs;
+        document.getElementById('accuracy').textContent = accuracyPct.toFixed(0) + '%';
+
+        // 公式说明（带入实际数值）
+        document.getElementById('formulaBox').innerHTML =
+          '<b>最终成绩公式</b>：<kbd>得分 / 有效时长</kbd> × <kbd>(得分 / 操作灯总数)³</kbd> × <kbd>100</kbd>' +
+          '<br/>代入：<kbd>' + score + ' / ' + actualTime.toFixed(1) + '</kbd> × ' +
+          '<kbd>(' + score + ' / ' + totalLEDs + ')³</kbd> × <kbd>100</kbd>' +
+          '<br/> = ' + speedRatio.toFixed(3) + ' × ' + Math.pow(accuracyRatio, 3).toFixed(3) + ' × 100' +
+          '<br/> = <b style="color:#6aa8ff">' + finalScore.toFixed(2) + '</b> 分' +
+          (r.actualGameTime < 40 ? '<br/><span style="color:var(--warn)">※ 已扣除空白期时长 ' + (40 - r.actualGameTime).toFixed(1) + ' 秒</span>' : '');
+      }
+
+      function bindRestart() {
+        var btn = document.getElementById('restartBtn');
+        btn.addEventListener('click', function () {
+          // 清除旧存档
+          try { localStorage.removeItem('batak.gameResult'); } catch (e) {}
+          // 页面淡出（简单处理）
+          document.body.style.transition = 'opacity 0.2s ease';
+          document.body.style.opacity = '0';
+          setTimeout(function () { window.location.href = './rule.html'; }, 200);
+        });
+      }
+
+      function init() {
+        render();
+        bindRestart();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>专注力和反应力训练 - 规则说明</title>
+  <style>
+    /* ========== 全局重置 & 基础变量 ========== */
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    :root {
+      --bg-deep:     #05070d;
+      --bg-panel:    #0c1220;
+      --bg-elev:     #141c33;
+      --border:      #1f2a4a;
+      --border-glow: rgba(60, 140, 255, 0.35);
+      --text-main:   #e6edf5;
+      --text-sub:    #8899b4;
+      --accent:      #3a8cff;
+      --accent-glow: rgba(58, 140, 255, 0.45);
+      --ok:          #3ddc97;
+      --danger:      #ff5c7a;
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+      background: radial-gradient(ellipse at top, #0b1530 0%, var(--bg-deep) 60%) no-repeat fixed;
+      color: var(--text-main);
+      font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+      user-select: none;
+    }
+    /* 背景扫描线装饰 */
+    body::before {
+      content: "";
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,0.015) 0px,
+        rgba(255,255,255,0.015) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ========== 主容器 ========== */
+    .app {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* ========== 顶部标题栏 ========== */
+    .header {
+      text-align: center;
+      padding-top: 8px;
+    }
+    .header .tag {
+      display: inline-block;
+      padding: 4px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 2px;
+      background: rgba(58,140,255,0.06);
+      margin-bottom: 14px;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      background: linear-gradient(120deg, #ffffff 0%, #8ab4ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header .sub {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    /* ========== 通用面板 ========== */
+    .panel {
+      background: linear-gradient(180deg, rgba(20,28,51,0.7) 0%, rgba(12,18,32,0.9) 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .panel::before {
+      content: "";
+      position: absolute; inset: 0;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(135deg, var(--border-glow) 0%, transparent 40%, transparent 60%, var(--border-glow) 100%);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+    .panel-title {
+      font-size: 13px;
+      color: var(--text-sub);
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-title::before {
+      content: "";
+      width: 3px; height: 14px;
+      background: var(--accent);
+      border-radius: 2px;
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    /* ========== 规则文本区 ========== */
+    .rule-text {
+      font-size: 16px;
+      line-height: 2;
+      color: var(--text-main);
+      text-align: justify;
+    }
+    .rule-text .hl-color {
+      display: inline-block;
+      padding: 0 6px;
+      margin: 0 2px;
+      border-radius: 4px;
+      font-weight: 600;
+      color: #fff;
+      text-shadow: 0 0 4px rgba(0,0,0,0.6);
+      position: relative;
+      transform: translateY(-1px);
+    }
+    .rule-text .hl-action {
+      padding: 1px 7px;
+      background: rgba(61, 220, 151, 0.1);
+      border: 1px solid rgba(61, 220, 151, 0.3);
+      color: var(--ok);
+      border-radius: 4px;
+      font-weight: 500;
+      margin: 0 2px;
+    }
+
+    /* ========== 颜色预览区 ========== */
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px;
+    }
+    .preview-item {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .preview-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-glow);
+    }
+    .led {
+      /* 外壳 + 灯芯一体化：padding 形成外壳边框，CSS 变量 --led-color 传递灯芯颜色 */
+      width: 66px; height: 66px;       /* 总尺寸（5px 外壳边框 + 56px 灯芯） */
+      padding: 5px;                    /* 外壳厚度 = 5px */
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #2a3860 0%, #0f1730 60%, #070b18 100%);
+      border: 2px solid #1a2440;
+      position: relative;
+      /* box-shadow 顺序：外层光晕(通过变量注入) → 外壳内阴影 → 外壳外投影 */
+      box-shadow:
+        var(--led-halo-shadow, none),
+        inset 0 2px 4px rgba(0,0,0,0.6),
+        0 2px 8px rgba(0,0,0,0.6);
+      transition: all 0.3s ease;
+      /* 灯芯颜色变量（供 ::before 使用） */
+      --led-color: transparent;
+    }
+    .led::before {
+      /* 彩色灯芯（内层）—— 实际显示颜色的区域 */
+      content: "";
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: var(--led-color);
+      /* 灯芯内部暗部阴影（立体感） */
+      box-shadow: inset 0 -6px 16px rgba(0,0,0,0.35);
+    }
+    .led::after {
+      /* 高光——覆盖在灯芯之上（百分比写法，自适应不同 LED 尺寸） */
+      content: "";
+      position: absolute;
+      top: 15%;
+      left: 23%;
+      width: 27%;
+      height: 20%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .led.on {
+      animation: led-pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes led-pulse {
+      0%, 100% { filter: brightness(1); }
+      50%      { filter: brightness(1.25); }
+    }
+    .preview-info {
+      text-align: center;
+    }
+    .preview-info .color-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .preview-info .action-badge {
+      display: inline-block;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(58,140,255,0.12);
+      border: 1px solid rgba(58,140,255,0.28);
+      color: var(--accent);
+    }
+
+    /* ========== 确认按钮 ========== */
+    .footer {
+      margin-top: auto;
+      padding-bottom: 12px;
+      display: flex;
+      justify-content: center;
+    }
+    .btn-confirm {
+      position: relative;
+      min-width: 220px;
+      padding: 16px 44px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #2a78ff 0%, #5a4cff 100%);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 20px rgba(58, 140, 255, 0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    .btn-confirm:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px rgba(58, 140, 255, 0.5), inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+    .btn-confirm:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 12px rgba(58, 140, 255, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .btn-confirm::after {
+      content: "";
+      position: absolute;
+      top: 0; left: -80%;
+      width: 50%; height: 100%;
+      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%);
+      transform: skewX(-20deg);
+      animation: btn-shine 2.8s ease-in-out infinite;
+    }
+    @keyframes btn-shine {
+      0%   { left: -80%; }
+      60%  { left: 130%; }
+      100% { left: 130%; }
+    }
+
+    /* ========== 响应式（横竖屏） ========== */
+    @media (max-width: 420px) {
+      .app { padding: 20px 16px; gap: 20px; }
+      .header h1 { font-size: 22px; }
+      .panel { padding: 16px; }
+      .rule-text { font-size: 15px; line-height: 1.9; }
+      .preview-grid { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
+      .preview-item { padding: 10px; }
+      /* 小屏 LED 缩小：padding 4px + 灯芯 44px = 总 52px */
+      .led { width: 52px; height: 52px; padding: 4px; }
+    }
+    @media (orientation: landscape) and (max-height: 460px) {
+      .app { padding: 14px 24px; gap: 14px; overflow-y: auto; }
+      .header { padding-top: 4px; }
+      .header h1 { font-size: 20px; }
+      .header .tag { margin-bottom: 8px; }
+      .panel { padding: 14px; }
+      .panel-title { margin-bottom: 8px; }
+      .footer { padding-bottom: 8px; }
+    }
+
+    /* ========== 加载动画 ========== */
+    .loading {
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 14px;
+      padding: 20px;
+    }
+    .loading .spinner {
+      display: inline-block;
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- 标题区 -->
+    <header class="header">
+      <span class="tag">ROUND · RULES</span>
+      <h1>专注力和反应力训练</h1>
+      <p class="sub">请仔细阅读本轮操作规则，确认无误后开始游戏</p>
+    </header>
+
+    <!-- 规则文本区 -->
+    <section class="panel">
+      <div class="panel-title">本轮规则</div>
+      <div id="ruleTextContainer" class="rule-text">
+        <div class="loading"><span class="spinner"></span>正在生成本轮规则…</div>
+      </div>
+    </section>
+
+    <!-- 颜色预览区 -->
+    <section class="panel">
+      <div class="panel-title">颜色与操作对照</div>
+      <div id="previewGrid" class="preview-grid">
+        <div class="loading"><span class="spinner"></span></div>
+      </div>
+    </section>
+
+    <!-- 确认按钮 -->
+    <footer class="footer">
+      <button id="btnConfirm" class="btn-confirm" disabled>确认并开始</button>
+    </footer>
+  </div>
+
+  <!-- 引入规则引擎 -->
+  <script src="./rule.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      // ============================================================
+      // 工具：转义 HTML 特殊字符
+      // ============================================================
+      function escapeHTML(s) {
+        return String(s).replace(/[&<>"']/g, function (c) {
+          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+        });
+      }
+
+      // ============================================================
+      // 规则文本高亮处理
+      //   将「颜色名」和「操作描述」替换为带样式的标签
+      //   操作关键词：点一下 / 点两下 / 长按0.5秒
+      // ============================================================
+      function decorateRuleText(rawText, operationLights) {
+        let html = escapeHTML(rawText);
+
+        // 按颜色名长度从长到短排序，避免短名先匹配导致长名匹配残缺
+        const sortedColors = operationLights
+          .slice()
+          .sort((a, b) => b.colorName.length - a.colorName.length);
+
+        // 1) 替换颜色名 → <span style="color:xxx;">颜色名</span>
+        sortedColors.forEach(function (op) {
+          const namePattern = op.colorName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const re = new RegExp(namePattern, 'g');
+          html = html.replace(re, function (match) {
+            return (
+              '<span class="hl-color" style="background-color:' + op.hex + ';">' +
+                match +
+              '</span>'
+            );
+          });
+        });
+
+        // 2) 替换操作关键词
+        html = html.replace(/点一下/g,     '<span class="hl-action">单击</span>');
+        html = html.replace(/点两下/g,     '<span class="hl-action">双击</span>');
+        html = html.replace(/长按0\.5秒/g, '<span class="hl-action">长按 0.5s</span>');
+
+        return html;
+      }
+
+      // ============================================================
+      // 渲染颜色预览
+      // ============================================================
+      function renderPreview(operationLights) {
+        const grid = document.getElementById('previewGrid');
+        const fragments = operationLights.map(function (op) {
+          // 使用 CSS 变量传递颜色：--led-color 控制灯芯，--led-halo-shadow 控制外层光晕
+          const halo =
+            '0 0 20px ' + op.hex + '99, 0 0 44px ' + op.hex + '55';
+          return (
+            '<div class="preview-item">' +
+              '<div class="led on" style="--led-color:' + op.hex + '; --led-halo-shadow:' + halo + ';">' +
+              '</div>' +
+              '<div class="preview-info">' +
+                '<div class="color-name" style="color:' + op.hex + ';">' + escapeHTML(op.colorName) + '</div>' +
+                '<span class="action-badge">' + escapeHTML(op.actionName) + '</span>' +
+              '</div>' +
+            '</div>'
+          );
+        });
+        grid.innerHTML = fragments.join('');
+      }
+
+      // ============================================================
+      // 主流程
+      // ============================================================
+      function init() {
+        var rule;
+        try {
+          rule = RuleEngine.generateRoundRule();
+        } catch (e) {
+          document.getElementById('ruleTextContainer').innerHTML =
+            '<div class="loading">规则生成失败：' + escapeHTML(e.message) + '</div>';
+          return;
+        }
+
+        // 1) 渲染高亮规则文本
+        document.getElementById('ruleTextContainer').innerHTML =
+          decorateRuleText(rule.ruleText, rule.operationLights);
+
+        // 2) 渲染颜色预览
+        renderPreview(rule.operationLights);
+
+        // 3) 启用确认按钮
+        var btn = document.getElementById('btnConfirm');
+        btn.disabled = false;
+
+        // 4) 点击确认：保存规则到 localStorage 并跳转游戏界面
+        btn.addEventListener('click', function () {
+          try {
+            localStorage.setItem('batak.currentRound', JSON.stringify(rule));
+          } catch (e) {
+            // 某些隐私模式下 localStorage 不可用：降级用 sessionStorage
+            try {
+              sessionStorage.setItem('batak.currentRound', JSON.stringify(rule));
+            } catch (e2) {
+              // 仍失败则忽略，游戏页面会重新生成
+            }
+          }
+
+          btn.disabled = true;
+          btn.textContent = '进入游戏…';
+          // 页面切换动画
+          document.body.style.transition = 'opacity 0.25s ease';
+          document.body.style.opacity = '0';
+          setTimeout(function () {
+            window.location.href = './game.html';
+          }, 260);
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
+
+小猴编程（9796306620872061）

@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>专注力和反应力训练 - 游戏</title>
+  <style>
+    /* ========== 全局重置 & 变量 ========== */
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    :root {
+      --bg-deep:     #05070d;
+      --bg-panel:    #0c1220;
+      --bg-elev:     #141c33;
+      --border:      #1f2a4a;
+      --border-glow: rgba(60, 140, 255, 0.35);
+      --text-main:   #e6edf5;
+      --text-sub:    #8899b4;
+      --accent:      #3a8cff;
+      --accent-glow: rgba(58, 140, 255, 0.45);
+      --ok:          #3ddc97;
+      --danger:      #ff5c7a;
+    }
+    html, body {
+      height: 100%; width: 100%;
+      background: radial-gradient(ellipse at top, #0b1530 0%, var(--bg-deep) 60%) no-repeat fixed;
+      color: var(--text-main);
+      font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+    body { display: flex; flex-direction: column; }
+    body::before {
+      content: ""; position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ========== HUD ========== */
+    .hud {
+      position: relative; z-index: 5;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 20px;
+    }
+    .hud-item {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .hud-item .label { font-size: 10px; color: var(--text-sub); letter-spacing: 2px; }
+    .hud-item .value { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+    .hud-item.timer .value { color: var(--accent); }
+    .hud-item.score .value { color: var(--ok); }
+    .hud-item.timer.urgent .value { color: var(--danger); animation: tpulse 0.5s ease-in-out infinite; }
+    @keyframes tpulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ========== 规则提示栏 ========== */
+    .rule-hint {
+      position: relative; z-index: 5;
+      display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
+      padding: 4px 16px 8px;
+    }
+    .hint-item {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 12px;
+    }
+    .hint-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      box-shadow: 0 0 8px currentColor;
+    }
+    .hint-text { font-size: 12px; color: var(--text-sub); }
+
+    /* ========== 游戏区域 ========== */
+    .game-area {
+      position: relative; z-index: 1;
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      overflow: hidden; padding: 8px;
+    }
+    .led-grid {
+      position: relative;
+      width: min(92vw, 68vh);
+      aspect-ratio: 1;
+      max-width: 560px; max-height: 560px;
+    }
+    /* 网格线：用 JS 动态注入到 <div class="grid-lines"> 中 */
+    .grid-line-v, .grid-line-h {
+      position: absolute;
+      background: rgba(60,140,255,0.18);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .grid-line-v { width: 1px; height: 100%; left: 0; }
+    .grid-line-h { height: 1px; width: 100%; top: 0; }
+
+    /* ========== LED 灯 ========== */
+    .led {
+      position: absolute;
+      width: 6.5%; aspect-ratio: 1;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      /* 金属外壳：加厚边框 + 明暗渐变（仿原版灯座厚重感） */
+      background: radial-gradient(circle at 30% 30%, #1f2b4e 0%, #0b1226 55%, #03060e 100%);
+      border: 3px solid #131c38;
+      box-shadow:
+        inset 0 3px 6px rgba(0,0,0,0.8),
+        inset 0 -2px 4px rgba(60, 140, 255, 0.05),
+        0 3px 8px rgba(0,0,0,0.55);
+      touch-action: none;
+      z-index: 1;
+      --led-color: transparent;
+      --led-halo: none;
+    }
+    .led::before {
+      content: ""; position: absolute; inset: 16%;
+      border-radius: 50%;
+      background-color: var(--led-color);
+      box-shadow: inset 0 -5px 14px rgba(0,0,0,0.3);
+    }
+    .led::after {
+      content: ""; position: absolute;
+      top: 20%; left: 24%; width: 30%; height: 22%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .led.on {
+      border-color: var(--led-color);
+      box-shadow:
+        var(--led-halo),
+        inset 0 3px 6px rgba(0,0,0,0.5),
+        inset 0 -2px 4px rgba(60, 140, 255, 0.15),
+        0 3px 8px rgba(0,0,0,0.55);
+    }
+    .led.on::before {
+      box-shadow: inset 0 -5px 14px rgba(0,0,0,0.15), 0 0 10px var(--led-color);
+    }
+
+    /* ========== 响应式 ========== */
+    @media (orientation: landscape) and (max-height: 500px) {
+      .led-grid { width: min(55vh, 380px); }
+      .hud { padding: 4px 16px; }
+      .hud-item { padding: 4px 12px; }
+      .hud-item .value { font-size: 18px; }
+      .hud-item .label { font-size: 9px; }
+      .rule-hint { padding: 2px 16px 4px; gap: 8px; }
+      .hint-item { padding: 3px 8px; }
+      .hint-text { font-size: 10px; }
+      .hint-dot { width: 10px; height: 10px; }
+    }
+    @media (max-width: 420px) {
+      .led-grid { width: min(88vw, 55vh); }
+      .hud-item { padding: 5px 12px; }
+      .hud-item .value { font-size: 18px; }
+      .hud-item .label { font-size: 9px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- HUD -->
+  <div class="hud">
+    <div class="hud-item timer" id="timerBox">
+      <span class="label">TIME</span>
+      <span class="value" id="timerValue">40.0</span>
+    </div>
+    <div class="hud-item score" id="scoreBox">
+      <span class="label">SCORE</span>
+      <span class="value" id="scoreValue">0</span>
+    </div>
+  </div>
+
+  <!-- 规则提示栏 -->
+  <div class="rule-hint" id="ruleHint"></div>
+
+  <!-- LED 灯阵 -->
+  <div class="game-area">
+    <div class="led-grid" id="ledGrid"></div>
+  </div>
+
+  <!-- 规则引擎 -->
+  <script src="./rule.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      // ============================================================
+      // 1. 配置常量
+      // ============================================================
+      // 12 个灯座坐标（5×5 坐标系，横纵坐标均为 0~4，左下角为原点）
+      var LED_POSITIONS = [
+        [0,0],[2,0],[4,0],[1,1],[3,1],[0,2],[2,2],[4,2],[1,3],[3,3],[0,4],[4,4]
+      ];
+      // 网格参数：5×5 点阵（坐标 0~4），共 5 条横线 + 5 条纵线
+      var GRID_PADDING  = 8;   // 左右上下各 8% padding
+      var GRID_STEP     = (100 - GRID_PADDING * 2) / 4;  // 21%（0~4 共 4 步间距）
+      var GRID_LINE_COUNT = 5;  // 0~4 共 5 条线
+      var GAME_DURATION   = 40;     // 游戏总时长（秒）
+      var TIMEOUT_MS      = 1250;   // 操作灯超时：亮起后 1.25 秒内无 mousedown（图片 0.5 秒已按要求改为 1.25 秒）
+      var LONG_PRESS_MS   = 500;    // 长按持续时间（按图片要求，0.5 秒只约束「按下时机」后的持续）
+      var DOUBLE_CLICK_MS = 100;    // 双击间隔上限（第一次 mouseup → 第二次 mousedown）
+      var MIN_INTERVAL    = 10;     // 亮灯间隔下限（毫秒）图片:最少 0.01 秒
+      var MAX_INTERVAL    = 500;    // 亮灯间隔上限（毫秒）图片:最长 0.5 秒
+      var MIN_BLANK       = 3000;   // 空白期下限（毫秒）图片:5-10 秒
+      var MAX_BLANK       = 6000;  // 空白期上限（毫秒）图片:5-10 秒
+      var MAX_BLANKS      = 2;      // 最大空白期次数 图片:0-2 次
+      var BLANK_PROB      = 0.05;   // 每次亮灯周期触发空白期的概率（小幅度降低）
+      var OPERATION_LED_COUNT = 1;  // 每个周期固定 1 个操作灯
+      var MAX_DISTRACTION_LEDS = 2; // 每个周期最多 2 个干扰灯
+
+      // ============================================================
+      // 2. 游戏状态
+      // ============================================================
+      var game = {
+        rule: null,
+        score: 0,
+        startTime: 0,
+        totalTime: GAME_DURATION,
+        blankTime: 0,            // 空白期总时长（秒），用于最终成绩计算时扣除
+        totalOpLEDs: 0,          // 游戏内亮起操作灯总个数
+        isRunning: false,
+        isEnded: false,
+        blankPeriodsUsed: 0,
+        leds: [],                // 12 个灯对象
+        activeCycle: null,       // 当前亮灯周期 { opLEDs:[], distLEDs:[] }
+        pressedLEDs: new Map(),  // pointerId → led（支持多点触控）
+        timerHandle: null,
+        nextCycleTimer: null,
+      };
+
+      // ============================================================
+      // 3. 工具函数
+      // ============================================================
+      function rand(min, max) { return min + Math.random() * (max - min); }
+      function randInt(min, max) { return Math.floor(rand(min, max + 1)); }
+      function shuffle(arr) {
+        var a = arr.slice();
+        for (var i = a.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = a[i]; a[i] = a[j]; a[j] = t;
+        }
+        return a;
+      }
+      function pick(arr, n) { return shuffle(arr).slice(0, n); }
+
+      // ============================================================
+      // 4. 读取规则（与 rule.HTML 传递的一致）
+      // ============================================================
+      function loadRule() {
+        try {
+          var raw = localStorage.getItem('batak.currentRound');
+          if (raw) {
+            var rule = JSON.parse(raw);
+            if (rule && rule.operationLights && rule.operationLights.length >= 2) {
+              return rule;
+            }
+          }
+        } catch (e) {}
+        // 降级：重新生成
+        return RuleEngine.generateRoundRule();
+      }
+
+      // ============================================================
+      // 5. LED 灯阵渲染 + 网格线绘制
+      // ============================================================
+      // 坐标映射：所有位置计算统一用此函数，确保网格线与 LED 完全对齐
+      function gridX(x) { return GRID_PADDING + x * GRID_STEP; }
+      function gridY(y) { return GRID_PADDING + (GRID_LINE_COUNT - 1 - y) * GRID_STEP; }
+
+      function drawGridLines(grid) {
+        // 清除旧网格线
+        grid.querySelectorAll('.grid-line-v, .grid-line-h').forEach(function (el) { el.remove(); });
+        // 6 条垂直网格线
+        for (var i = 0; i < GRID_LINE_COUNT; i++) {
+          var v = document.createElement('div');
+          v.className = 'grid-line-v';
+          v.style.left = gridX(i) + '%';
+          grid.appendChild(v);
+        }
+        // 6 条水平网格线
+        for (var j = 0; j < GRID_LINE_COUNT; j++) {
+          var h = document.createElement('div');
+          h.className = 'grid-line-h';
+          h.style.top = gridY(GRID_LINE_COUNT - 1 - j) + '%';
+          grid.appendChild(h);
+        }
+      }
+
+      function createLEDs() {
+        var grid = document.getElementById('ledGrid');
+        grid.innerHTML = '';
+        // 先画网格线
+        drawGridLines(grid);
+
+        game.leds = LED_POSITIONS.map(function (pos) {
+          var x = pos[0], y = pos[1];
+          var el = document.createElement('div');
+          el.className = 'led';
+          // 坐标映射：所有 LED 使用 gridX/gridY，保证与网格线对齐
+          el.style.left   = gridX(x) + '%';
+          el.style.top    = gridY(y) + '%';
+          var led = {
+            id: x + ',' + y,
+            x: x, y: y,
+            element: el,
+            state: 'off',
+            type: null,
+            color: null,
+            action: null,
+            timers: [],
+          };
+          el.addEventListener('pointerdown', function (e) { onPointerDown(e, led); });
+          grid.appendChild(el);
+          return led;
+        });
+        // 全局 pointerup / pointercancel
+        document.addEventListener('pointerup', onPointerUp);
+        document.addEventListener('pointercancel', onPointerUp);
+      }
+
+      // ============================================================
+      // 6. LED 状态控制
+      // ============================================================
+      function turnOnLED(led, type, color, action) {
+        led.state = 'waiting';
+        led.type = type;
+        led.color = color;
+        led.action = action;
+        led.timers = [];
+        var el = led.element;
+        el.classList.add('on');
+        el.style.setProperty('--led-color', color);
+        el.style.setProperty('--led-halo', '0 0 16px ' + color + 'cc, 0 0 36px ' + color + '66');
+        // 操作灯启动超时计时器（0.5 秒内无 mousedown → 超时）
+        if (type === 'operation') {
+          var t = setTimeout(function () { onTimeout(led); }, TIMEOUT_MS);
+          led.timers.push(t);
+        }
+      }
+
+      function turnOffLED(led) {
+        clearLEDTimers(led);
+        led.state = 'off';
+        led.type = null;
+        led.action = null;
+        var el = led.element;
+        el.classList.remove('on');
+        el.style.setProperty('--led-color', 'transparent');
+        el.style.setProperty('--led-halo', 'none');
+      }
+
+      function clearLEDTimers(led) {
+        if (led.timers) {
+          led.timers.forEach(function (t) { clearTimeout(t); });
+          led.timers = [];
+        }
+      }
+
+      function clearAllTimers() {
+        game.leds.forEach(clearLEDTimers);
+        if (game.timerHandle)    { clearInterval(game.timerHandle);  game.timerHandle = null; }
+        if (game.nextCycleTimer) { clearTimeout(game.nextCycleTimer); game.nextCycleTimer = null; }
+      }
+
+      // ============================================================
+      // 7. 亮灯调度器
+      // ============================================================
+      function startNextCycle() {
+        if (game.isEnded || !game.isRunning) return;
+
+        // 检查游戏是否结束
+        var elapsed = (Date.now() - game.startTime) / 1000;
+        if (elapsed >= game.totalTime) { endGame(); return; }
+
+        // 随机决定是否插入空白期（0~2 次，5~10 秒）
+        if (game.blankPeriodsUsed < MAX_BLANKS && Math.random() < BLANK_PROB) {
+          game.blankPeriodsUsed++;
+          var blankMs = rand(MIN_BLANK, MAX_BLANK);
+          var blankStart = Date.now();
+          game.nextCycleTimer = setTimeout(function () {
+            game.blankTime += (Date.now() - blankStart) / 1000;
+            startNextCycle();
+          }, blankMs);
+          return;
+        }
+
+        // 选择操作灯位置（固定 1 个）
+        var opCount = OPERATION_LED_COUNT;
+        var opPositions = pick(game.leds, opCount);
+
+        // 选择干扰灯位置（0~2 个，不与操作灯重叠）
+        var remaining = game.leds.filter(function (l) { return opPositions.indexOf(l) === -1; });
+        var distCount = randInt(0, Math.min(MAX_DISTRACTION_LEDS, remaining.length));
+        var distPositions = pick(remaining, distCount);
+
+        // 点亮操作灯（随机分配操作色）
+        opPositions.forEach(function (led) {
+          var opColor = game.rule.operationLights[randInt(0, game.rule.operationLights.length - 1)];
+          turnOnLED(led, 'operation', opColor.hex, opColor.action);
+          game.totalOpLEDs++;
+        });
+
+        // 点亮干扰灯（随机分配干扰色）
+        distPositions.forEach(function (led) {
+          var distColor = game.rule.distractionColors[randInt(0, game.rule.distractionColors.length - 1)];
+          turnOnLED(led, 'distraction', distColor.hex, null);
+        });
+
+        // 记录当前周期
+        game.activeCycle = { opLEDs: opPositions.slice(), distLEDs: distPositions.slice() };
+      }
+
+      // 当一盏操作灯判定完成（成功/失败/超时）时调用
+      function onOperationLEDDone(led) {
+        if (!game.activeCycle) return;
+        // 如果 nextCycleTimer 已被设置（说明 handleDistractionHit 已手动安排下一周期），不重复启动
+        if (game.nextCycleTimer) return;
+        // 检查当前周期所有操作灯是否都已熄灭
+        var allDone = game.activeCycle.opLEDs.every(function (l) { return l.state === 'off'; });
+        if (allDone) {
+          // 熄灭所有干扰灯
+          game.activeCycle.distLEDs.forEach(function (l) {
+            if (l.state !== 'off') turnOffLED(l);
+          });
+          // 当前组熄灭后立即开启下一组（空白期仍由 startNextCycle 统一处理）
+          game.nextCycleTimer = setTimeout(function () {
+            game.nextCycleTimer = null;
+            startNextCycle();
+          }, 0);
+        }
+      }
+
+      // ============================================================
+      // 8. 操作判定状态机
+      // ============================================================
+      // 图片规则：干扰灯被点击时，单次亮起的全部操作灯和干扰灯熄灭，并得 0 分
+      function handleDistractionHit() {
+        if (!game.activeCycle) return;
+        // 所有操作灯按失败处理（得 0 分）
+        game.activeCycle.opLEDs.forEach(function (l) {
+          if (l.state !== 'off' && l.state !== 'done') failLED(l);
+        });
+        // 所有干扰灯直接熄灭
+        game.activeCycle.distLEDs.forEach(function (l) {
+          if (l.state !== 'off') turnOffLED(l);
+        });
+        // 安排下一周期（注意：failLED 中触发的 onOperationLEDDone 会因 nextCycleTimer 已存在而跳过重复调度）
+        if (game.nextCycleTimer) { clearTimeout(game.nextCycleTimer); }
+        game.nextCycleTimer = setTimeout(function () {
+          game.nextCycleTimer = null;
+          startNextCycle();
+        }, 0);
+      }
+
+      function onPointerDown(e, led) {
+        if (!game.isRunning || led.state === 'off' || led.state === 'done') return;
+        if (game.pressedLEDs.has(e.pointerId)) return;  // 该指针已按下
+
+        // 干扰灯被点击：按图片规则，当前周期所有灯立即熄灭，操作灯全部得 0 分
+        if (led.type === 'distraction') {
+          e.preventDefault();
+          handleDistractionHit();
+          return;
+        }
+
+        e.preventDefault();
+        game.pressedLEDs.set(e.pointerId, led);
+
+        switch (led.action) {
+          case 'click':       handleClickDown(led); break;
+          case 'doubleClick': handleDblClickDown(led); break;
+          case 'longPress':   handleLongPressDown(led); break;
+        }
+      }
+
+      function onPointerUp(e) {
+        var led = game.pressedLEDs.get(e.pointerId);
+        if (!led) return;
+        game.pressedLEDs.delete(e.pointerId);
+        if (led.state === 'off' || led.state === 'done') return;
+        if (led.type !== 'operation') return;
+
+        switch (led.action) {
+          case 'click':       handleClickUp(led); break;
+          case 'doubleClick': handleDblClickUp(led); break;
+          case 'longPress':   handleLongPressUp(led); break;
+        }
+      }
+
+      // --- 单击 ---
+      function handleClickDown(led) {
+        clearLEDTimers(led);
+        led.state = 'pressed';
+        // 如果 0.5 秒内不松手 → 长按 = 错误
+        var t = setTimeout(function () { failLED(led); }, TIMEOUT_MS);
+        led.timers.push(t);
+      }
+      function handleClickUp(led) {
+        if (led.state === 'pressed') successLED(led);
+      }
+
+      // --- 双击 ---
+      function handleDblClickDown(led) {
+        if (led.state === 'waiting') {
+          // 第一次按下
+          clearLEDTimers(led);
+          led.state = 'pressed1';
+          var t = setTimeout(function () { failLED(led); }, TIMEOUT_MS); // 长按 = 错误
+          led.timers.push(t);
+        } else if (led.state === 'released1') {
+          // 第二次按下（在 0.1 秒内）→ 成功
+          clearLEDTimers(led);
+          successLED(led);
+        }
+      }
+      function handleDblClickUp(led) {
+        if (led.state === 'pressed1') {
+          clearLEDTimers(led);
+          led.state = 'released1';
+          // 启动 0.1 秒计时器，等待第二次按下
+          var t = setTimeout(function () { failLED(led); }, DOUBLE_CLICK_MS);
+          led.timers.push(t);
+        }
+      }
+
+      // --- 长按 ---
+      function handleLongPressDown(led) {
+        clearLEDTimers(led);
+        led.state = 'pressing';
+        // 持续 0.5 秒 → 成功
+        var t = setTimeout(function () { successLED(led); }, LONG_PRESS_MS);
+        led.timers.push(t);
+      }
+      function handleLongPressUp(led) {
+        if (led.state === 'pressing') failLED(led); // 提前松手 = 错误
+      }
+
+      // --- 超时（灯亮起后 0.5 秒内无 mousedown）---
+      function onTimeout(led) {
+        if (led.state === 'waiting') failLED(led);
+      }
+
+      // --- 成功 / 失败 ---
+      function successLED(led) {
+        if (led.state === 'done' || led.state === 'off') return;
+        clearLEDTimers(led);
+        led.state = 'done';
+        game.score++;
+        updateScore();
+        turnOffLED(led);
+        onOperationLEDDone(led);
+      }
+      function failLED(led) {
+        if (led.state === 'done' || led.state === 'off') return;
+        clearLEDTimers(led);
+        led.state = 'done';
+        turnOffLED(led);
+        onOperationLEDDone(led);
+      }
+
+      // ============================================================
+      // 9. 游戏计时器 & HUD 更新
+      // ============================================================
+      function startTimer() {
+        game.startTime = Date.now();
+        game.timerHandle = setInterval(function () {
+          var elapsed = (Date.now() - game.startTime) / 1000;
+          var remaining = Math.max(0, game.totalTime - elapsed);
+          updateTimer(remaining);
+          if (remaining <= 0) endGame();
+        }, 100);
+      }
+      function updateTimer(remaining) {
+        document.getElementById('timerValue').textContent = remaining.toFixed(1);
+        var box = document.getElementById('timerBox');
+        if (remaining <= 5) box.classList.add('urgent');
+        else box.classList.remove('urgent');
+      }
+      function updateScore() {
+        document.getElementById('scoreValue').textContent = game.score;
+      }
+
+      // ============================================================
+      // 10. 游戏结束 → 保存结果 → 跳转 result.HTML
+      // ============================================================
+      function endGame() {
+        if (game.isEnded) return;
+        game.isEnded = true;
+        game.isRunning = false;
+        clearAllTimers();
+        // 熄灭所有灯
+        game.leds.forEach(function (led) { if (led.state !== 'off') turnOffLED(led); });
+        // 计算实际游戏时间（扣除空白期）
+        var actualGameTime = game.totalTime - game.blankTime;
+        // 保存结果
+        var result = {
+          score: game.score,
+          actualGameTime: actualGameTime,
+          totalOpLEDs: game.totalOpLEDs,
+        };
+        try {
+          localStorage.setItem('batak.gameResult', JSON.stringify(result));
+        } catch (e) {
+          try { sessionStorage.setItem('batak.gameResult', JSON.stringify(result)); } catch (e2) {}
+        }
+        // 延迟跳转（让玩家看到最后状态）
+        setTimeout(function () { window.location.href = './result.html'; }, 600);
+      }
+
+      // ============================================================
+      // 11. 规则提示栏渲染
+      // ============================================================
+      function renderRuleHint() {
+        var hint = document.getElementById('ruleHint');
+        var items = game.rule.operationLights.map(function (op) {
+          return '<div class="hint-item">' +
+            '<div class="hint-dot" style="background:' + op.hex + '; color:' + op.hex + ';"></div>' +
+            '<span class="hint-text">' + op.actionName + '</span>' +
+          '</div>';
+        });
+        hint.innerHTML = items.join('');
+      }
+
+      // ============================================================
+      // 12. 浏览器冲突规避（长按菜单、选中、拖拽、多指缩放）
+      // ============================================================
+      function preventConflicts() {
+        document.addEventListener('contextmenu',  function (e) { e.preventDefault(); });
+        document.addEventListener('selectstart',  function (e) { e.preventDefault(); });
+        document.addEventListener('dragstart',    function (e) { e.preventDefault(); });
+        document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+        document.addEventListener('touchstart', function (e) {
+          if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
+      }
+
+      // ============================================================
+      // 13. 初始化
+      // ============================================================
+      function init() {
+        game.rule = loadRule();
+        createLEDs();
+        renderRuleHint();
+        preventConflicts();
+        game.isRunning = true;
+        game.isEnded = false;
+        startTimer();
+        startNextCycle();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
+
