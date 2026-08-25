@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>专注力和反应力训练 - 规则说明</title>
+  <style>
+    /* ========== 全局重置 & 基础变量 ========== */
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    :root {
+      --bg-deep:     #0a0d14;
+      --bg-panel:    #11141a;
+      --bg-elev:     #171b23;
+      --border:      #2a2f3a;
+      --border-glow: rgba(201, 162, 74, 0.3);
+      --text-main:   #f0f2f5;
+      --text-sub:    #8a95a8;
+      /* APXGP 多色配色 */
+      --accent:      #fbbd05bf;  /* 黄 */
+      --red:         #ff3a3a;  /* 红 */
+      --green:       #3ddc97;  /* 绿 */
+      --orange:      #ff8c1a;  /* 橙 */
+      --purple:      #a78bfa;  /* 紫 */
+      --cyan:        #00d4ff;  /* 蓝青 */
+      --white:       #ffffff;  /* 白 */
+      --gray-bar:    #3a3f4a;
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+      background: var(--bg-deep) no-repeat fixed;
+      color: var(--text-main);
+      font-family: "Bahnschrift", "DIN", "Rajdhani", "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1, "ss01" 1;
+      overflow: hidden;
+      user-select: none;
+    }
+    /* 背景扫描线装饰 */
+    body::before {
+      content: "";
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,0.015) 0px,
+        rgba(255,255,255,0.015) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ========== 主容器 ========== */
+    .app {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* ========== 顶部标题栏 ========== */
+    .header {
+      text-align: center;
+      padding-top: 8px;
+    }
+    .header .tag {
+      display: inline-block;
+      padding: 4px 14px;
+      border: 1px solid var(--purple);
+      border-radius: 2px;
+      font-size: 11px;
+      color: var(--purple);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: transparent;
+      margin-bottom: 14px;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: #ffffff;
+    }
+    .header .sub {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    /* ========== 通用面板 ========== */
+    .panel {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      position: relative;
+      overflow: visible;
+    }
+    .panel-title {
+      font-size: 13px;
+      color: #ffffff;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 0;
+      display: block;
+      width: 100%;
+      background: #3a3f4a;
+    }
+    .panel-body {
+      padding: 14px 4px 0 4px;
+    }
+    /* 两个框之间额外增加间距 */
+    .panel + .panel {
+      margin-top: 16px;
+    }
+
+    /* ========== 规则文本区 ========== */
+    .rule-text {
+      font-size: 18px;
+      line-height: 2.1;
+      color: var(--text-main);
+      text-align: justify;
+    }
+    .rule-text .hl-color {
+      font-weight: 600;
+    }
+    .rule-text .hl-action {
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    /* ========== 颜色预览区 ========== */
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      border: 1px solid #7a8598;
+      border-radius: 2px;
+      padding: 14px;
+    }
+    .preview-item {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .led {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: var(--led-color, #333);
+      position: relative;
+      border: 1px solid #3a3f4a;
+      --led-color: transparent;
+    }
+    .preview-info {
+      text-align: center;
+    }
+    .preview-info .color-name {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+    .preview-info .action-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 2px;
+      background: transparent;
+      border: 1px solid var(--orange);
+      color: var(--orange);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    /* ========== 确认按钮 ========== */
+    .footer {
+      margin-top: auto;
+      padding-bottom: 12px;
+      display: flex;
+      justify-content: center;
+    }
+    .btn-confirm {
+      position: relative;
+      min-width: 220px;
+      padding: 16px 44px;
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      background: var(--accent);
+      color: #000;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .btn-confirm:hover {
+      background: #e6a800;
+      border-color: #e6a800;
+    }
+    .btn-confirm:active {
+      background: #cc9400;
+      border-color: #cc9400;
+    }
+    .btn-confirm:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ========== 响应式（横竖屏） ========== */
+    @media (max-width: 420px) {
+      .app { padding: 20px 18px; gap: 24px; }
+      .header h1 { font-size: 22px; }
+      .rule-text { font-size: 16px; line-height: 2; }
+      .preview-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+      .preview-item { padding: 12px 10px; }
+      .led { width: 52px; height: 52px; }
+    }
+    @media (orientation: landscape) and (max-height: 460px) {
+      .app { padding: 14px 24px; gap: 14px; overflow-y: auto; }
+      .header { padding-top: 4px; }
+      .header h1 { font-size: 20px; }
+      .header .tag { margin-bottom: 8px; }
+      .panel-title { margin-bottom: 10px; padding: 8px 14px; font-size: 12px; }
+      .footer { padding-bottom: 8px; }
+    }
+
+    /* ========== 加载动画 ========== */
+    .loading {
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 14px;
+      padding: 20px;
+    }
+    .loading .spinner {
+      display: inline-block;
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- 标题区 -->
+    <header class="header">
+      <span class="tag">RULES</span>
+      <h1>专注力和反应力训练</h1>
+      <p class="sub">请仔细阅读本轮操作规则，确认无误后开始游戏</p>
+    </header>
+
+    <!-- 规则文本区 -->
+    <section class="panel">
+      <div class="panel-title">本轮规则</div>
+      <div class="panel-body">
+        <div id="ruleTextContainer" class="rule-text">
+          <div class="loading"><span class="spinner"></span>正在生成本轮规则…</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 颜色预览区 -->
+    <section class="panel">
+      <div class="panel-title">颜色与操作对照</div>
+      <div class="panel-body">
+        <div id="previewGrid" class="preview-grid">
+          <div class="loading"><span class="spinner"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 确认按钮 -->
+    <footer class="footer">
+      <button id="btnConfirm" class="btn-confirm" disabled> >>>确认并开始 </button>
+    </footer>
+  </div>
+
+  <!-- 引入规则引擎 -->
+  <script src="./rule.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      // ============================================================
+      // 工具：转义 HTML 特殊字符
+      // ============================================================
+      function escapeHTML(s) {
+        return String(s).replace(/[&<>"']/g, function (c) {
+          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+        });
+      }
+
+      // ============================================================
+      // 规则文本高亮处理
+      //   将「颜色名」和「操作描述」替换为带样式的标签
+      //   操作关键词：点一下 / 点两下 / 长按0.5秒
+      // ============================================================
+      function decorateRuleText(rawText, operationLights) {
+        let html = escapeHTML(rawText);
+
+        // 按颜色名长度从长到短排序，避免短名先匹配导致长名匹配残缺
+        const sortedColors = operationLights
+          .slice()
+          .sort((a, b) => b.colorName.length - a.colorName.length);
+
+        // 1) 替换颜色名 → <span style="color:xxx;">颜色名</span>
+        sortedColors.forEach(function (op) {
+          const namePattern = op.colorName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const re = new RegExp(namePattern, 'g');
+          html = html.replace(re, function (match) {
+            return (
+              '<span class="hl-color" style="color:' + op.hex + ';">' +
+                match +
+              '</span>'
+            );
+          });
+        });
+
+        // 2) 替换操作关键词
+        html = html.replace(/点一下/g,     '<span class="hl-action">单击</span>');
+        html = html.replace(/点两下/g,     '<span class="hl-action">双击</span>');
+        html = html.replace(/长按0\.5秒/g, '<span class="hl-action">长按 0.5s</span>');
+
+        return html;
+      }
+
+      // ============================================================
+      // 渲染颜色预览
+      // ============================================================
+      function renderPreview(operationLights) {
+        const grid = document.getElementById('previewGrid');
+        const fragments = operationLights.map(function (op) {
+          return (
+            '<div class="preview-item">' +
+              '<div class="led" style="background-color:' + op.hex + ';">' +
+              '</div>' +
+              '<div class="preview-info">' +
+                '<div class="color-name" style="color:' + op.hex + ';">' + escapeHTML(op.colorName) + '</div>' +
+                '<span class="action-badge">' + escapeHTML(op.actionName) + '</span>' +
+              '</div>' +
+            '</div>'
+          );
+        });
+        grid.innerHTML = fragments.join('');
+      }
+
+      // ============================================================
+      // 主流程
+      // ============================================================
+      function init() {
+        var rule;
+        try {
+          rule = RuleEngine.generateRoundRule();
+        } catch (e) {
+          document.getElementById('ruleTextContainer').innerHTML =
+            '<div class="loading">规则生成失败：' + escapeHTML(e.message) + '</div>';
+          return;
+        }
+
+        // 1) 渲染高亮规则文本
+        document.getElementById('ruleTextContainer').innerHTML =
+          decorateRuleText(rule.ruleText, rule.operationLights);
+
+        // 2) 渲染颜色预览
+        renderPreview(rule.operationLights);
+
+        // 3) 启用确认按钮
+        var btn = document.getElementById('btnConfirm');
+        btn.disabled = false;
+
+        // 4) 点击确认：保存规则到 localStorage 并跳转游戏界面
+        btn.addEventListener('click', function () {
+          try {
+            localStorage.setItem('batak.currentRound', JSON.stringify(rule));
+          } catch (e) {
+            // 某些隐私模式下 localStorage 不可用：降级用 sessionStorage
+            try {
+              sessionStorage.setItem('batak.currentRound', JSON.stringify(rule));
+            } catch (e2) {
+              // 仍失败则忽略，游戏页面会重新生成
+            }
+          }
+
+          btn.disabled = true;
+          btn.textContent = '进入游戏…';
+          // 页面切换动画
+          document.body.style.transition = 'opacity 0.25s ease';
+          document.body.style.opacity = '0';
+          setTimeout(function () {
+            window.location.href = './game.html';
+          }, 260);
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
+
