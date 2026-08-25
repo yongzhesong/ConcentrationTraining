@@ -8,23 +8,29 @@
     /* ========== 全局 ========== */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
-      --bg-deep:  #05070d;
-      --bg-panel: #0c1220;
-      --bg-elev:  #141c33;
-      --border:   #1f2a4a;
-      --glow:     rgba(60, 140, 255, 0.4);
-      --text-main:#e6edf5;
-      --text-sub: #8899b4;
-      --accent:   #3a8cff;
-      --ok:       #3ddc97;
-      --warn:     #ffb24a;
-      --danger:   #ff5c7a;
+      --bg-deep:  #0a0d14;
+      --bg-panel: #11141a;
+      --bg-elev:  #171b23;
+      --border:   #2a2f3a;
+      --text-main:#f0f2f5;
+      --text-sub: #8a95a8;
+      /* APXGP 多色配色 */
+      --accent:   #ffd500;  /* 黄 */
+      --red:      #ff3a3a;  /* 红 */
+      --green:    #3ddc97;  /* 绿 */
+      --orange:   #ff8c1a;  /* 橙 */
+      --purple:   #a78bfa;  /* 紫 */
+      --cyan:     #00d4ff;  /* 蓝青 */
+      --white:    #ffffff;
+      --gray-bar: #3a3f4a;
     }
     html, body {
       height: 100%; width: 100%;
-      background: radial-gradient(ellipse at top, #0b1530 0%, var(--bg-deep) 60%) no-repeat fixed;
+      background: var(--bg-deep) no-repeat fixed;
       color: var(--text-main);
-      font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: "Bahnschrift", "DIN", "Rajdhani", "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1, "ss01" 1;
       overflow-x: hidden;
       user-select: none;
       -webkit-user-select: none;
@@ -42,184 +48,163 @@
       pointer-events: none;
     }
 
-    /* ========== 面板 ========== */
+    /* ========== 面板（去框，保留灰条） ========== */
     .panel {
       position: relative; z-index: 1;
       width: 100%;
-      max-width: 560px;
-      background: linear-gradient(180deg, #0f1830 0%, #080e1e 100%);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 32px 28px 28px;
-      box-shadow:
-        0 20px 60px rgba(0,0,0,0.5),
-        0 0 0 1px rgba(60,140,255,0.08) inset;
-    }
-    .panel::before {
-      content: ""; position: absolute; inset: 0;
-      border-radius: 18px;
-      background: linear-gradient(135deg, rgba(60,140,255,0.18), transparent 40%, transparent 60%, rgba(120,60,255,0.14));
-      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude;
-      padding: 1px; pointer-events: none;
+      max-width: 680px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
     }
 
-    /* ========== 标题 ========== */
+    /* ========== 标签 & 标题 ========== */
     .tag {
       display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(58,140,255,0.1);
-      border: 1px solid rgba(58,140,255,0.25);
-      color: var(--accent);
-      font-size: 11px; letter-spacing: 3px;
-      padding: 4px 12px; border-radius: 999px;
+      background: transparent;
+      border: 1px solid var(--red);
+      color: var(--red);
+      font-size: 12px; letter-spacing: 4px;
+      text-transform: uppercase;
+      font-weight: 600;
+      padding: 4px 14px; border-radius: 2px;
     }
     .title {
       margin-top: 14px;
       font-size: 28px; font-weight: 700;
-      background: linear-gradient(90deg, #fff 0%, #a8c5ff 100%);
-      -webkit-background-clip: text; background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #ffffff;
+      letter-spacing: 1px;
     }
     .subtitle {
       margin-top: 6px;
       font-size: 13px; color: var(--text-sub);
     }
 
-    /* ========== 最终成绩大字 ========== */
-    .score-card {
-      margin-top: 28px;
-      background: linear-gradient(135deg, rgba(58,140,255,0.08) 0%, rgba(120,60,255,0.06) 100%);
-      border: 1px solid rgba(60,140,255,0.2);
-      border-radius: 14px;
-      padding: 28px 20px;
-      text-align: center;
-      position: relative;
-    }
-    .score-card::after {
-      content: ""; position: absolute; left: 50%; bottom: -1px;
-      width: 60%; height: 1px; transform: translateX(-50%);
-      background: linear-gradient(90deg, transparent, rgba(60,140,255,0.5), transparent);
-    }
-    .score-label {
-      font-size: 11px; letter-spacing: 4px; color: var(--text-sub);
-      margin-bottom: 10px;
-    }
-    .final-score {
-      font-size: 72px; font-weight: 800; line-height: 1;
-      font-variant-numeric: tabular-nums;
-      background: linear-gradient(180deg, #ffffff 0%, #6aa8ff 70%, #3a8cff 100%);
-      -webkit-background-clip: text; background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 60px var(--glow);
-      filter: drop-shadow(0 4px 24px var(--glow));
-    }
-    .final-score .unit {
-      font-size: 22px; font-weight: 600;
-      vertical-align: 1.2em;
-      margin-left: 4px;
-    }
-    .raw-score {
-      margin-top: 10px;
-      font-size: 14px; color: var(--text-sub);
-    }
-    .raw-score b { color: var(--ok); font-size: 18px; font-weight: 700; margin: 0 4px; }
-
-    /* ========== 统计信息 ========== */
-    .stats {
-      margin-top: 20px;
+    /* ========== 紧凑统计行 ========== */
+    .stats-row {
+      margin-top: 24px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
     }
-    .stat {
-      background: var(--bg-panel);
+    .stat-box {
+      background: #000;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px 10px;
+      border-radius: 2px;
+      padding: 16px 10px;
       text-align: center;
     }
-    .stat .lbl {
+    .stat-box .lbl {
       font-size: 10px; color: var(--text-sub);
-      letter-spacing: 2px; margin-bottom: 6px;
+      letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
+      margin-bottom: 8px;
     }
-    .stat .val {
-      font-size: 22px; font-weight: 700;
+    .stat-box .val {
+      font-size: 24px; font-weight: 700;
       font-variant-numeric: tabular-nums;
       line-height: 1.1;
     }
-    .stat.accuracy .val { color: var(--ok); }
-    .stat.time .val { color: var(--accent); }
-    .stat.totalled .val { color: var(--warn); }
+    .stat-box.time { border-color: var(--white); }
+    .stat-box.time .val { color: var(--white); }
+    .stat-box.leds { border-color: var(--orange); }
+    .stat-box.leds .val { color: var(--orange); }
+    .stat-box.correct { border-color: var(--cyan); }
+    .stat-box.correct .val { color: var(--cyan); }
 
-    /* ========== 公式说明 ========== */
-    .formula {
-      margin-top: 20px;
-      padding: 14px 16px;
-      background: rgba(255,255,255,0.02);
-      border: 1px dashed rgba(136,153,180,0.25);
-      border-radius: 10px;
-      font-size: 12px; color: var(--text-sub);
-      line-height: 1.7;
+    /* ========== 图表区 ========== */
+    .chart-block {
+      margin-top: 22px;
     }
-    .formula b { color: var(--text-main); font-weight: 600; }
-    .formula kbd {
-      display: inline-block;
-      padding: 1px 6px;
-      background: var(--bg-elev);
+    .chart-canvas {
+      width: 100%;
+      height: 160px;
+      display: block;
+      background: #0a0d14;
       border: 1px solid var(--border);
-      border-radius: 4px;
-      font-family: inherit;
-      color: var(--accent);
-      font-size: 11px;
+      border-bottom: none;
+      border-radius: 2px 2px 0 0;
+    }
+    /* 仪表盘 canvas（半圆形，需要更高） */
+    .gauge-canvas {
+      width: 100%;
+      height: 230px;
+      display: block;
+      background: #0a0d14;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 2px 2px 0 0;
+    }
+    /* 灰色长条标签 */
+    .chart-bar {
+      width: 100%;
+      background: var(--gray-bar);
+      border-radius: 0 0 2px 2px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .chart-bar .bar-label {
+      font-size: 13px;
+      color: #ffffff;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .chart-bar .bar-value {
+      font-size: 18px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 1px;
+    }
+    .chart-bar.score-bar .bar-value { color: var(--accent); }
+    .chart-bar.accuracy-bar .bar-value { color: var(--cyan); }
+    .chart-bar .bar-value .unit {
+      font-size: 12px; font-weight: 600; margin-left: 3px;
     }
 
     /* ========== 重新开始按钮 ========== */
-    .btn-wrap { margin-top: 26px; display: flex; justify-content: center; }
+    .btn-wrap { margin-top: 28px; display: flex; justify-content: center; }
     .btn-restart {
       position: relative;
       display: inline-flex; align-items: center; justify-content: center;
       gap: 8px;
-      width: 100%; max-width: 360px;
-      padding: 14px 24px;
-      background: linear-gradient(135deg, #3a8cff 0%, #5b6cff 100%);
-      color: #fff;
-      border: none; border-radius: 12px;
+      width: 100%; max-width: 400px;
+      padding: 18px 28px;
+      background: #0a0d14;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 2px;
       font-size: 16px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
       cursor: pointer;
-      box-shadow:
-        0 8px 22px rgba(58,140,255,0.35),
-        0 0 0 1px rgba(255,255,255,0.1) inset;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-      overflow: hidden;
+      transition: background 0.15s ease, color 0.15s ease;
     }
-    .btn-restart:hover { filter: brightness(1.1); box-shadow: 0 10px 28px rgba(58,140,255,0.45); }
-    .btn-restart:active { transform: translateY(1px); filter: brightness(0.95); }
-    .btn-restart::after {
-      content: ""; position: absolute;
-      top: 0; left: -100%; width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      animation: btn-shine 2.8s infinite;
-    }
-    @keyframes btn-shine { 0% { left: -100% } 50% { left: 100% } 100% { left: 100% } }
+    .btn-restart:hover { background: #1a1f2e; }
+    .btn-restart:active { background: #050810; }
     .btn-restart svg { width: 18px; height: 18px; }
 
     /* ========== 响应式 ========== */
     @media (max-width: 480px) {
-      body { padding: 14px; align-items: flex-start; padding-top: 40px; }
-      .panel { padding: 24px 20px; }
+      body { padding: 14px; align-items: flex-start; padding-top: 30px; }
+      .panel { max-width: 100%; }
       .title { font-size: 22px; }
-      .final-score { font-size: 60px; }
-      .stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-      .stat { padding: 12px 6px; }
-      .stat .val { font-size: 18px; }
-      .formula { font-size: 11px; line-height: 1.65; }
+      .stat-box { padding: 12px 8px; }
+      .stat-box .val { font-size: 20px; }
+      .stat-box .lbl { font-size: 9px; }
+      .chart-canvas { height: 130px; }
+      .gauge-canvas { height: 190px; }
+      .chart-bar { padding: 8px 12px; }
+      .chart-bar .bar-label { font-size: 12px; }
+      .chart-bar .bar-value { font-size: 15px; }
     }
     @media (orientation: landscape) and (max-height: 520px) {
-      body { padding: 12px; }
-      .panel { padding: 20px 24px; max-width: 720px; }
-      .score-card { margin-top: 16px; padding: 20px; }
-      .final-score { font-size: 56px; }
-      .stats { margin-top: 14px; }
+      body { padding: 10px; }
+      .panel { max-width: 780px; }
+      .stats-row { margin-top: 16px; }
+      .chart-canvas { height: 110px; }
+      .gauge-canvas { height: 170px; }
       .btn-wrap { margin-top: 18px; }
     }
   </style>
@@ -230,31 +215,39 @@
     <h1 class="title">专注力和反应力训练结果</h1>
     <p class="subtitle">以下为本次训练成绩分析，建议坚持每日练习</p>
 
-    <!-- 最终成绩大字 -->
-    <div class="score-card">
-      <div class="score-label">最 终 成 绩</div>
-      <div class="final-score" id="finalScore">--<span class="unit">分</span></div>
-      <div class="raw-score">本轮总得分为 <b id="rawScore">--</b> 分</div>
-    </div>
-
-    <!-- 统计信息卡片 -->
-    <div class="stats">
-      <div class="stat time">
+    <!-- 紧凑统计行 -->
+    <div class="stats-row">
+      <div class="stat-box time">
         <div class="lbl">有效时长</div>
         <div class="val" id="actualTime">--</div>
       </div>
-      <div class="stat totalled">
-        <div class="lbl">操作灯总数</div>
+      <div class="stat-box leds">
+        <div class="lbl">操作灯个数</div>
         <div class="val" id="totalLED">--</div>
       </div>
-      <div class="stat accuracy">
-        <div class="lbl">正确率</div>
-        <div class="val" id="accuracy">--</div>
+      <div class="stat-box correct">
+        <div class="lbl">操作对个数</div>
+        <div class="val" id="correctCount">--</div>
       </div>
     </div>
 
-    <!-- 公式说明 -->
-    <div class="formula" id="formulaBox"></div>
+    <!-- 最终得分仪表盘 -->
+    <div class="chart-block">
+      <canvas id="scoreChart" class="gauge-canvas"></canvas>
+      <div class="chart-bar score-bar">
+        <span class="bar-label">FINAL SCORE · 最终得分</span>
+        <span class="bar-value" id="scoreBarVal">--<span class="unit">分</span></span>
+      </div>
+    </div>
+
+    <!-- 正确率折线图 -->
+    <div class="chart-block">
+      <canvas id="accuracyChart" class="chart-canvas"></canvas>
+      <div class="chart-bar accuracy-bar">
+        <span class="bar-label">ACCURACY · 正确率趋势</span>
+        <span class="bar-value" id="accuracyBarVal">--<span class="unit">%</span></span>
+      </div>
+    </div>
 
     <!-- 重新开始按钮 -->
     <div class="btn-wrap">
@@ -272,69 +265,331 @@
     (function () {
       'use strict';
 
+      // ============================================================
+      // 1. 数据加载
+      // ============================================================
       function loadResult() {
         try {
           var raw = localStorage.getItem('batak.gameResult');
           if (raw) {
             var r = JSON.parse(raw);
-            if (r && typeof r.score === 'number' && typeof r.actualGameTime === 'number') {
-              return r;
-            }
+            if (r && typeof r.score === 'number') return r;
           }
         } catch (e) {}
         return null;
       }
 
+      function loadHistory() {
+        try {
+          var raw = localStorage.getItem('batak.history');
+          if (raw) {
+            var h = JSON.parse(raw);
+            if (Array.isArray(h)) return h;
+          }
+        } catch (e) {}
+        return [];
+      }
+
+      // ============================================================
+      // 2. Canvas 仪表盘绘制（半圆形，带刻度、指针、进度弧）
+      // ============================================================
+      function drawGauge(canvas, value, maxVal, color, unit) {
+        var ctx = canvas.getContext('2d');
+        var W = canvas._cssW || canvas.width;
+        var H = canvas._cssH || canvas.height;
+        ctx.clearRect(0, 0, W, H);
+
+        // 仪表盘几何参数
+        var cx = W / 2;           // 圆心 X
+        var cy = H - 28;          // 圆心 Y（靠下，留底部空间给标签）
+        var radius = Math.min(W / 2 - 30, H - 50);  // 半径
+        if (radius < 30) radius = 30;
+
+        // 角度范围：从 180°（左）到 360°（右），即上半圆
+        var startAngle = Math.PI;       // 180°
+        var endAngle = 2 * Math.PI;     // 360°
+        var totalAngle = endAngle - startAngle;  // 180°
+
+        // 值比例（限制在 0~1）
+        var ratio = maxVal > 0 ? Math.min(1, Math.max(0, value / maxVal)) : 0;
+
+        // --- 1. 背景弧（灰色） ---
+        ctx.strokeStyle = '#2a2f3a';
+        ctx.lineWidth = 12;
+        ctx.lineCap = 'butt';
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, startAngle, endAngle);
+        ctx.stroke();
+
+        // --- 2. 进度弧（彩色，根据当前值） ---
+        if (ratio > 0) {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 12;
+          ctx.lineCap = 'butt';
+          ctx.beginPath();
+          ctx.arc(cx, cy, radius, startAngle, startAngle + totalAngle * ratio);
+          ctx.stroke();
+        }
+
+        // --- 3. 刻度线（10 等分） ---
+        ctx.strokeStyle = '#5a6372';
+        ctx.lineWidth = 1;
+        for (var i = 0; i <= 10; i++) {
+          var t = i / 10;
+          var ang = startAngle + totalAngle * t;
+          var inner = radius - 20;
+          var outer = radius - 8;
+          var x1 = cx + Math.cos(ang) * inner;
+          var y1 = cy + Math.sin(ang) * inner;
+          var x2 = cx + Math.cos(ang) * outer;
+          var y2 = cy + Math.sin(ang) * outer;
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+        }
+
+        // --- 4. 刻度数值（0, 中间值, 最大值） ---
+        ctx.fillStyle = '#8a95a8';
+        ctx.font = '10px "Bahnschrift","DIN","Rajdhani",sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        // 左端 0
+        var lx = cx + Math.cos(startAngle) * (radius - 34);
+        var ly = cy + Math.sin(startAngle) * (radius - 34);
+        ctx.fillText('0', lx, ly);
+        // 右端 maxVal
+        var rx = cx + Math.cos(endAngle) * (radius - 34);
+        var ry = cy + Math.sin(endAngle) * (radius - 34);
+        ctx.fillText(maxVal.toFixed(0), rx, ry);
+        // 中间值
+        var midAng = startAngle + totalAngle * 0.5;
+        var mx = cx + Math.cos(midAng) * (radius - 34);
+        var my = cy + Math.sin(midAng) * (radius - 34);
+        ctx.fillText((maxVal / 2).toFixed(0), mx, my);
+
+        // --- 5. 指针 ---
+        var pointerAng = startAngle + totalAngle * ratio;
+        var pLen = radius - 18;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + Math.cos(pointerAng) * pLen, cy + Math.sin(pointerAng) * pLen);
+        ctx.stroke();
+
+        // --- 6. 中心圆 ---
+        ctx.fillStyle = '#0a0d14';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // --- 7. 中央数值 ---
+        ctx.fillStyle = color;
+        ctx.font = 'bold 32px "Bahnschrift","DIN","Rajdhani",sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText(value.toFixed(1), cx, cy - radius * 0.35);
+
+        // 单位
+        ctx.fillStyle = '#8a95a8';
+        ctx.font = '11px "Bahnschrift","DIN","Rajdhani",sans-serif';
+        ctx.fillText(unit, cx, cy - radius * 0.35 + 16);
+      }
+
+      // ============================================================
+      // 2.5 Canvas 折线图绘制（正确率用）
+      // ============================================================
+      function drawLineChart(canvas, data, color, maxVal, unit, highlightIndex) {
+        var ctx = canvas.getContext('2d');
+        var W = canvas._cssW || canvas.width;
+        var H = canvas._cssH || canvas.height;
+        ctx.clearRect(0, 0, W, H);
+
+        var padL = 38, padR = 12, padT = 10, padB = 24;
+        var plotW = W - padL - padR;
+        var plotH = H - padT - padB;
+
+        // 背景网格（4 条水平虚线）
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 3]);
+        for (var i = 0; i <= 4; i++) {
+          var gy = padT + (plotH * i / 4);
+          ctx.beginPath();
+          ctx.moveTo(padL, gy);
+          ctx.lineTo(W - padR, gy);
+          ctx.stroke();
+        }
+        ctx.setLineDash([]);
+
+        // Y 轴标签
+        ctx.fillStyle = '#8a95a8';
+        ctx.font = '10px "Bahnschrift","DIN","Rajdhani",sans-serif';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        for (var j = 0; j <= 4; j++) {
+          var val = maxVal - (maxVal * j / 4);
+          var gy2 = padT + (plotH * j / 4);
+          ctx.fillText(val.toFixed(0), padL - 4, gy2);
+        }
+
+        // 数据点坐标计算
+        var n = data.length;
+        if (n === 0) return;
+        var xStep = n > 1 ? plotW / (n - 1) : 0;
+
+        function getX(i) { return padL + xStep * i; }
+        function getY(v) {
+          if (maxVal <= 0) return padT + plotH;
+          return padT + plotH - (v / maxVal) * plotH;
+        }
+
+        // 折线
+        if (n > 1) {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+          ctx.lineJoin = 'round';
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(getX(0), getY(data[0]));
+          for (var k = 1; k < n; k++) {
+            ctx.lineTo(getX(k), getY(data[k]));
+          }
+          ctx.stroke();
+        }
+
+        // 数据点
+        for (var m = 0; m < n; m++) {
+          var px = getX(m), py = getY(data[m]);
+          if (m === highlightIndex) {
+            // 高亮点：大圆圈 + 空心
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(px, py, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#0a0d14';
+            ctx.beginPath();
+            ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // 普通点：小圆圈
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(px, py, 3, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        // X 轴标签
+        ctx.fillStyle = '#8a95a8';
+        ctx.font = '10px "Bahnschrift","DIN","Rajdhani",sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        if (n >= 1) {
+          ctx.fillText('1', getX(0), H - padB + 8);
+        }
+        if (n >= 2) {
+          ctx.fillText(String(n), getX(n - 1), H - padB + 8);
+        }
+        if (n > 5) {
+          ctx.fillText('…', getX(Math.floor(n / 2)), H - padB + 8);
+        }
+      }
+
+      // 适配 HiDPI
+      function setupCanvas(canvas) {
+        var dpr = window.devicePixelRatio || 1;
+        var rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        var ctx = canvas.getContext('2d');
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
+        canvas._cssW = rect.width;
+        canvas._cssH = rect.height;
+        return { w: rect.width, h: rect.height };
+      }
+
+      // ============================================================
+      // 3. 渲染
+      // ============================================================
       function render() {
         var r = loadResult();
+        var history = loadHistory();
+
         if (!r) {
-          document.getElementById('finalScore').innerHTML = '<span class="unit">数据缺失</span>';
-          document.getElementById('rawScore').textContent = '--';
           document.getElementById('actualTime').textContent = '--';
           document.getElementById('totalLED').textContent = '--';
-          document.getElementById('accuracy').textContent = '--';
-          document.getElementById('formulaBox').innerHTML =
-            '未找到本轮游戏结果。请先完成一局训练。<br/>请点击下方按钮回到规则界面开始训练。';
+          document.getElementById('correctCount').textContent = '--';
+          document.getElementById('scoreBarVal').innerHTML = '--<span class="unit">分</span>';
+          document.getElementById('accuracyBarVal').innerHTML = '--<span class="unit">%</span>';
+          var c1 = document.getElementById('scoreChart');
+          var c2 = document.getElementById('accuracyChart');
+          setupCanvas(c1);
+          setupCanvas(c2);
           return;
         }
 
-        // 防止除 0
-        var actualTime = Math.max(0.001, r.actualGameTime || 0);
-        var totalLEDs  = Math.max(1, r.totalOpLEDs || 0);
-        var score      = Math.max(0, r.score || 0);
+        var finalScore = typeof r.finalScore === 'number' ? r.finalScore : 0;
+        var accuracy = typeof r.accuracy === 'number' ? r.accuracy : 0;
+        var score = typeof r.score === 'number' ? r.score : 0;
+        var actualTime = typeof r.actualGameTime === 'number' ? r.actualGameTime : 0;
+        var totalLEDs = typeof r.totalOpLEDs === 'number' ? r.totalOpLEDs : 0;
 
-        // 最终成绩公式：(得分/时间) × (得分/操作灯总数)^3 × 100
-        var speedRatio   = score / actualTime;
-        var accuracyRatio = score / totalLEDs;
-        var finalScore   = speedRatio * Math.pow(accuracyRatio, 3) * 100;
-        finalScore = Math.max(0, finalScore);
-
-        // 正确率
-        var accuracyPct = Math.min(100, accuracyRatio * 100);
-
-        // 渲染
-        document.getElementById('finalScore').innerHTML = finalScore.toFixed(2) + '<span class="unit">分</span>';
-        document.getElementById('rawScore').textContent = score;
+        // 统计行
         document.getElementById('actualTime').textContent = actualTime.toFixed(1) + 's';
         document.getElementById('totalLED').textContent = totalLEDs;
-        document.getElementById('accuracy').textContent = accuracyPct.toFixed(0) + '%';
+        document.getElementById('correctCount').textContent = score;
 
-        // 公式说明（带入实际数值）
-        document.getElementById('formulaBox').innerHTML =
-          '<b>最终成绩公式</b>：<kbd>得分 / 有效时长</kbd> × <kbd>(得分 / 操作灯总数)³</kbd> × <kbd>100</kbd>' +
-          '<br/>代入：<kbd>' + score + ' / ' + actualTime.toFixed(1) + '</kbd> × ' +
-          '<kbd>(' + score + ' / ' + totalLEDs + ')³</kbd> × <kbd>100</kbd>' +
-          '<br/> = ' + speedRatio.toFixed(3) + ' × ' + Math.pow(accuracyRatio, 3).toFixed(3) + ' × 100' +
-          '<br/> = <b style="color:#6aa8ff">' + finalScore.toFixed(2) + '</b> 分' +
-          (r.actualGameTime < 40 ? '<br/><span style="color:var(--warn)">※ 已扣除空白期时长 ' + (40 - r.actualGameTime).toFixed(1) + ' 秒</span>' : '');
+        // 灰色长条
+        document.getElementById('scoreBarVal').innerHTML = finalScore.toFixed(2) + '<span class="unit">分</span>';
+        document.getElementById('accuracyBarVal').innerHTML = accuracy.toFixed(0) + '<span class="unit">%</span>';
+
+        // 准备历史数据
+        var data = history.length > 0 ? history : [{
+          finalScore: finalScore, accuracy: accuracy,
+          score: score, actualGameTime: actualTime,
+          totalOpLEDs: totalLEDs
+        }];
+
+        var lastEntry = data[data.length - 1];
+        if (lastEntry.finalScore !== finalScore || lastEntry.score !== score) {
+          data.push({
+            finalScore: finalScore, accuracy: accuracy,
+            score: score, actualGameTime: actualTime,
+            totalOpLEDs: totalLEDs, ts: Date.now()
+          });
+          if (data.length > 20) data = data.slice(-20);
+        }
+
+        var scoreData = data.map(function (d) { return d.finalScore; });
+        var accData = data.map(function (d) { return d.accuracy; });
+        var highlightIdx = scoreData.length - 1;
+        // 仪表盘最大值：取历史最高分的 1.2 倍，至少 200
+        var scoreMax = Math.max(200, Math.ceil(Math.max.apply(null, scoreData) * 1.2));
+
+        var c1 = document.getElementById('scoreChart');
+        var c2 = document.getElementById('accuracyChart');
+
+        setTimeout(function () {
+          setupCanvas(c1);
+          drawGauge(c1, finalScore, scoreMax, '#ffd500', '分');
+          setupCanvas(c2);
+          drawLineChart(c2, accData, '#00d4ff', 100, '%', highlightIdx);
+        }, 60);
       }
 
       function bindRestart() {
         var btn = document.getElementById('restartBtn');
         btn.addEventListener('click', function () {
-          // 清除旧存档
           try { localStorage.removeItem('batak.gameResult'); } catch (e) {}
-          // 页面淡出（简单处理）
           document.body.style.transition = 'opacity 0.2s ease';
           document.body.style.opacity = '0';
           setTimeout(function () { window.location.href = './rule.html'; }, 200);
@@ -344,6 +599,33 @@
       function init() {
         render();
         bindRestart();
+        // 窗口大小变化时重绘
+        window.addEventListener('resize', function () {
+          var r = loadResult();
+          var history = loadHistory();
+          if (!r) return;
+          var finalScore = typeof r.finalScore === 'number' ? r.finalScore : 0;
+          var accuracy = typeof r.accuracy === 'number' ? r.accuracy : 0;
+          var data = history.length > 0 ? history : [{
+            finalScore: finalScore, accuracy: accuracy,
+            score: r.score, actualGameTime: r.actualGameTime,
+            totalOpLEDs: r.totalOpLEDs
+          }];
+          var last = data[data.length - 1];
+          if (last.finalScore !== finalScore || last.score !== r.score) {
+            data.push({ finalScore: finalScore, accuracy: accuracy, score: r.score,
+              actualGameTime: r.actualGameTime, totalOpLEDs: r.totalOpLEDs, ts: Date.now() });
+          }
+          var scoreData = data.map(function (d) { return d.finalScore; });
+          var accData = data.map(function (d) { return d.accuracy; });
+          var scoreMax = Math.max(200, Math.ceil(Math.max.apply(null, scoreData) * 1.2));
+          var c1 = document.getElementById('scoreChart');
+          var c2 = document.getElementById('accuracyChart');
+          setupCanvas(c1);
+          drawGauge(c1, finalScore, scoreMax, '#ffd500', '分');
+          setupCanvas(c2);
+          drawLineChart(c2, accData, '#00d4ff', 100, '%', accData.length - 1);
+        });
       }
 
       if (document.readyState === 'loading') {
@@ -355,4 +637,3 @@
   </script>
 </body>
 </html>
-

@@ -2,32 +2,25 @@
   'use strict';
 
   // ============================================================
-  // 1. 颜色池：约 20 种高区分度颜色
-  //    说明：采用 HSL 色彩空间按色相均匀分布（间隔 ≥18°），
-  //    并配以不同的亮度/饱和度，避免出现视觉过于相似的颜色。
+  // 1. 颜色池：12 种高区分度颜色
+  //    说明：采用 HSL 色彩空间，色相按 30° 等间隔分布，
+  //    配以不同的亮度/饱和度，确保任意两色色相差≥30°，
+  //    不会出现视觉相似的颜色。
   //    每条颜色记录包含：英文名（key）、中文名、HSL 值、标准 HEX 值
   // ============================================================
   const COLOR_POOL = [
     { key: 'scarlet',    name: '猩红色',   hsl: 'hsl(0,   85%, 50%)',  hex: '#E50000' },
-    { key: 'tangerine',  name: '橘红色',   hsl: 'hsl(18,  90%, 52%)',  hex: '#F26A13' },
-    { key: 'amber',      name: '琥珀色',   hsl: 'hsl(36,  95%, 55%)',  hex: '#F5A623' },
-    { key: 'canary',     name: '金丝雀黄', hsl: 'hsl(54,  95%, 55%)',  hex: '#F5DE23' },
-    { key: 'lime',       name: '青柠色',   hsl: 'hsl(78,  80%, 50%)',  hex: '#8ED610' },
+    { key: 'tangerine',  name: '橘红色',   hsl: 'hsl(30,  90%, 52%)',  hex: '#F2810F' },
+    { key: 'canary',     name: '金丝雀黄', hsl: 'hsl(60,  95%, 55%)',  hex: '#F5DE23' },
+    { key: 'lime',       name: '青柠色',   hsl: 'hsl(90,  80%, 50%)',  hex: '#8ED610' },
     { key: 'forest',     name: '森林绿',   hsl: 'hsl(120, 70%, 38%)',  hex: '#1D911D' },
-    { key: 'teal',       name: '蓝绿色',   hsl: 'hsl(165, 75%, 42%)',  hex: '#1BB08A' },
-    { key: 'cyan',       name: '青蓝色',   hsl: 'hsl(190, 95%, 48%)',  hex: '#0FB6DB' },
-    { key: 'azure',      name: '天蓝色',   hsl: 'hsl(210, 90%, 55%)',  hex: '#3A95F5' },
-    { key: 'royal',      name: '宝蓝色',   hsl: 'hsl(230, 85%, 55%)',  hex: '#3D5DF7' },
-    { key: 'indigo',     name: '靛蓝色',   hsl: 'hsl(252, 70%, 50%)',  hex: '#5B36D9' },
-    { key: 'violet',     name: '紫罗兰',   hsl: 'hsl(275, 75%, 55%)',  hex: '#9B40F2' },
-    { key: 'fuchsia',    name: '品红色',   hsl: 'hsl(300, 85%, 52%)',  hex: '#E01BE0' },
-    { key: 'rose',       name: '玫瑰红',   hsl: 'hsl(330, 85%, 58%)',  hex: '#F2468F' },
-    { key: 'crimson',    name: '绯红色',   hsl: 'hsl(348, 85%, 48%)',  hex: '#DB103D' },
-    { key: 'coral',      name: '珊瑚色',   hsl: 'hsl(9,   80%, 58%)',  hex: '#F25840' },
-    { key: 'olive',      name: '橄榄绿',   hsl: 'hsl(90,  60%, 40%)',  hex: '#668F29' },
-    { key: 'navy',       name: '藏青色',   hsl: 'hsl(220, 80%, 30%)',  hex: '#0F3C78' },
     { key: 'mint',       name: '薄荷绿',   hsl: 'hsl(150, 70%, 60%)',  hex: '#5DDD9C' },
-    { key: 'maroon',     name: '栗色',     hsl: 'hsl(0,   65%, 35%)',  hex: '#952626' }
+    { key: 'teal',       name: '蓝绿色',   hsl: 'hsl(180, 75%, 42%)',  hex: '#1BAEAE' },
+    { key: 'azure',      name: '天蓝色',   hsl: 'hsl(210, 90%, 55%)',  hex: '#3A95F5' },
+    { key: 'royal',      name: '宝蓝色',   hsl: 'hsl(240, 85%, 55%)',  hex: '#3D3DF7' },
+    { key: 'violet',     name: '紫罗兰',   hsl: 'hsl(270, 75%, 55%)',  hex: '#9B40F2' },
+    { key: 'fuchsia',    name: '品红色',   hsl: 'hsl(300, 85%, 52%)',  hex: '#E01BE0' },
+    { key: 'rose',       name: '玫瑰红',   hsl: 'hsl(330, 85%, 58%)',  hex: '#F2468F' }
   ];
 
   // ============================================================
@@ -95,7 +88,7 @@
     const sorted = sortByHue(COLOR_POOL);
     const total = sorted.length;
 
-    // 每种操作色之间至少相差这么多颜色索引（避免视觉过于相似）
+    // 每种操作色之间至少相差这么多颜色索引（色相差≥60°，确保高区分度）
     const minStep = 2;
     // 生成所有合法的 n 元索引组合
     const combos = [];

@@ -8,24 +8,31 @@
     /* ========== 全局重置 & 基础变量 ========== */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
-      --bg-deep:     #05070d;
-      --bg-panel:    #0c1220;
-      --bg-elev:     #141c33;
-      --border:      #1f2a4a;
-      --border-glow: rgba(60, 140, 255, 0.35);
-      --text-main:   #e6edf5;
-      --text-sub:    #8899b4;
-      --accent:      #3a8cff;
-      --accent-glow: rgba(58, 140, 255, 0.45);
-      --ok:          #3ddc97;
-      --danger:      #ff5c7a;
+      --bg-deep:     #0a0d14;
+      --bg-panel:    #11141a;
+      --bg-elev:     #171b23;
+      --border:      #2a2f3a;
+      --border-glow: rgba(201, 162, 74, 0.3);
+      --text-main:   #f0f2f5;
+      --text-sub:    #8a95a8;
+      /* APXGP 多色配色 */
+      --accent:      #ffd500;  /* 黄 */
+      --red:         #ff3a3a;  /* 红 */
+      --green:       #3ddc97;  /* 绿 */
+      --orange:      #ff8c1a;  /* 橙 */
+      --purple:      #a78bfa;  /* 紫 */
+      --cyan:        #00d4ff;  /* 蓝青 */
+      --white:       #ffffff;  /* 白 */
+      --gray-bar:    #3a3f4a;
     }
     html, body {
       height: 100%;
       width: 100%;
-      background: radial-gradient(ellipse at top, #0b1530 0%, var(--bg-deep) 60%) no-repeat fixed;
+      background: var(--bg-deep) no-repeat fixed;
       color: var(--text-main);
-      font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: "Bahnschrift", "DIN", "Rajdhani", "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1, "ss01" 1;
       overflow: hidden;
       user-select: none;
     }
@@ -51,10 +58,10 @@
       height: 100%;
       max-width: 720px;
       margin: 0 auto;
-      padding: 32px 24px;
+      padding: 32px 28px;
       display: flex;
       flex-direction: column;
-      gap: 28px;
+      gap: 32px;
     }
 
     /* ========== 顶部标题栏 ========== */
@@ -65,22 +72,21 @@
     .header .tag {
       display: inline-block;
       padding: 4px 14px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      font-size: 12px;
-      color: var(--accent);
-      letter-spacing: 2px;
-      background: rgba(58,140,255,0.06);
+      border: 1px solid var(--red);
+      border-radius: 2px;
+      font-size: 11px;
+      color: var(--red);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: transparent;
       margin-bottom: 14px;
     }
     .header h1 {
       font-size: 28px;
       font-weight: 600;
-      letter-spacing: 1px;
-      background: linear-gradient(120deg, #ffffff 0%, #8ab4ff 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      letter-spacing: 2px;
+      color: #ffffff;
     }
     .header .sub {
       margin-top: 6px;
@@ -90,154 +96,98 @@
 
     /* ========== 通用面板 ========== */
     .panel {
-      background: linear-gradient(180deg, rgba(20,28,51,0.7) 0%, rgba(12,18,32,0.9) 100%);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 22px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
       position: relative;
-      overflow: hidden;
-    }
-    .panel::before {
-      content: "";
-      position: absolute; inset: 0;
-      border-radius: 16px;
-      padding: 1px;
-      background: linear-gradient(135deg, var(--border-glow) 0%, transparent 40%, transparent 60%, var(--border-glow) 100%);
-      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-              mask-composite: exclude;
-      pointer-events: none;
-      opacity: 0.5;
+      overflow: visible;
     }
     .panel-title {
       font-size: 13px;
-      color: var(--text-sub);
-      letter-spacing: 1px;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      color: #ffffff;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 0;
+      display: block;
+      width: 100%;
+      background: #3a3f4a;
     }
-    .panel-title::before {
-      content: "";
-      width: 3px; height: 14px;
-      background: var(--accent);
-      border-radius: 2px;
-      box-shadow: 0 0 8px var(--accent-glow);
+    .panel-body {
+      padding: 0 4px;
+    }
+    /* 两个框之间额外增加间距 */
+    .panel + .panel {
+      margin-top: 16px;
     }
 
     /* ========== 规则文本区 ========== */
     .rule-text {
-      font-size: 16px;
-      line-height: 2;
+      font-size: 18px;
+      line-height: 2.1;
       color: var(--text-main);
       text-align: justify;
     }
     .rule-text .hl-color {
-      display: inline-block;
-      padding: 0 6px;
-      margin: 0 2px;
-      border-radius: 4px;
       font-weight: 600;
-      color: #fff;
-      text-shadow: 0 0 4px rgba(0,0,0,0.6);
-      position: relative;
-      transform: translateY(-1px);
     }
     .rule-text .hl-action {
-      padding: 1px 7px;
-      background: rgba(61, 220, 151, 0.1);
-      border: 1px solid rgba(61, 220, 151, 0.3);
-      color: var(--ok);
-      border-radius: 4px;
-      font-weight: 500;
-      margin: 0 2px;
+      color: var(--cyan);
+      font-weight: 600;
     }
 
     /* ========== 颜色预览区 ========== */
     .preview-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 14px;
+      gap: 0;
+      border-top: 1px solid #7a8598;
+      border-left: 1px solid #7a8598;
     }
     .preview-item {
-      background: var(--bg-elev);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
+      background: transparent;
+      border: none;
+      border-right: 1px solid #7a8598;
+      border-bottom: 1px solid #7a8598;
+      border-radius: 0;
+      padding: 16px 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 10px;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-    .preview-item:hover {
-      transform: translateY(-2px);
-      border-color: var(--border-glow);
     }
     .led {
-      /* 外壳 + 灯芯一体化：padding 形成外壳边框，CSS 变量 --led-color 传递灯芯颜色 */
-      width: 66px; height: 66px;       /* 总尺寸（5px 外壳边框 + 56px 灯芯） */
-      padding: 5px;                    /* 外壳厚度 = 5px */
+      width: 60px; height: 60px;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #2a3860 0%, #0f1730 60%, #070b18 100%);
-      border: 2px solid #1a2440;
+      background: var(--led-color, #333);
       position: relative;
-      /* box-shadow 顺序：外层光晕(通过变量注入) → 外壳内阴影 → 外壳外投影 */
-      box-shadow:
-        var(--led-halo-shadow, none),
-        inset 0 2px 4px rgba(0,0,0,0.6),
-        0 2px 8px rgba(0,0,0,0.6);
-      transition: all 0.3s ease;
-      /* 灯芯颜色变量（供 ::before 使用） */
+      border: 1px solid #3a3f4a;
       --led-color: transparent;
-    }
-    .led::before {
-      /* 彩色灯芯（内层）—— 实际显示颜色的区域 */
-      content: "";
-      display: block;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background-color: var(--led-color);
-      /* 灯芯内部暗部阴影（立体感） */
-      box-shadow: inset 0 -6px 16px rgba(0,0,0,0.35);
-    }
-    .led::after {
-      /* 高光——覆盖在灯芯之上（百分比写法，自适应不同 LED 尺寸） */
-      content: "";
-      position: absolute;
-      top: 15%;
-      left: 23%;
-      width: 27%;
-      height: 20%;
-      background: radial-gradient(ellipse, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-    .led.on {
-      animation: led-pulse 1.8s ease-in-out infinite;
-    }
-    @keyframes led-pulse {
-      0%, 100% { filter: brightness(1); }
-      50%      { filter: brightness(1.25); }
     }
     .preview-info {
       text-align: center;
     }
     .preview-info .color-name {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
       margin-bottom: 2px;
     }
     .preview-info .action-badge {
       display: inline-block;
-      font-size: 12px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: rgba(58,140,255,0.12);
-      border: 1px solid rgba(58,140,255,0.28);
-      color: var(--accent);
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 2px;
+      background: transparent;
+      border: 1px solid var(--orange);
+      color: var(--orange);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
     }
 
     /* ========== 确认按钮 ========== */
@@ -251,59 +201,43 @@
       position: relative;
       min-width: 220px;
       padding: 16px 44px;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #2a78ff 0%, #5a4cff 100%);
-      color: #fff;
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: 2px;
+      border: 1px solid var(--accent);
+      border-radius: 2px;
+      background: #0a0d14;
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
       cursor: pointer;
-      overflow: hidden;
-      transition: transform 0.15s ease, box-shadow 0.2s ease;
-      box-shadow: 0 4px 20px rgba(58, 140, 255, 0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+      transition: background 0.15s ease, color 0.15s ease;
     }
     .btn-confirm:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 28px rgba(58, 140, 255, 0.5), inset 0 1px 0 rgba(255,255,255,0.2);
+      background: #1a1f2e;
     }
     .btn-confirm:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 12px rgba(58, 140, 255, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+      background: #050810;
     }
-    .btn-confirm::after {
-      content: "";
-      position: absolute;
-      top: 0; left: -80%;
-      width: 50%; height: 100%;
-      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%);
-      transform: skewX(-20deg);
-      animation: btn-shine 2.8s ease-in-out infinite;
-    }
-    @keyframes btn-shine {
-      0%   { left: -80%; }
-      60%  { left: 130%; }
-      100% { left: 130%; }
+    .btn-confirm:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
 
     /* ========== 响应式（横竖屏） ========== */
     @media (max-width: 420px) {
-      .app { padding: 20px 16px; gap: 20px; }
+      .app { padding: 20px 18px; gap: 24px; }
       .header h1 { font-size: 22px; }
-      .panel { padding: 16px; }
-      .rule-text { font-size: 15px; line-height: 1.9; }
-      .preview-grid { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
-      .preview-item { padding: 10px; }
-      /* 小屏 LED 缩小：padding 4px + 灯芯 44px = 总 52px */
-      .led { width: 52px; height: 52px; padding: 4px; }
+      .rule-text { font-size: 16px; line-height: 2; }
+      .preview-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+      .preview-item { padding: 12px 10px; }
+      .led { width: 52px; height: 52px; }
     }
     @media (orientation: landscape) and (max-height: 460px) {
       .app { padding: 14px 24px; gap: 14px; overflow-y: auto; }
       .header { padding-top: 4px; }
       .header h1 { font-size: 20px; }
       .header .tag { margin-bottom: 8px; }
-      .panel { padding: 14px; }
-      .panel-title { margin-bottom: 8px; }
+      .panel-title { margin-bottom: 10px; padding: 8px 14px; font-size: 12px; }
       .footer { padding-bottom: 8px; }
     }
 
@@ -339,22 +273,26 @@
     <!-- 规则文本区 -->
     <section class="panel">
       <div class="panel-title">本轮规则</div>
-      <div id="ruleTextContainer" class="rule-text">
-        <div class="loading"><span class="spinner"></span>正在生成本轮规则…</div>
+      <div class="panel-body">
+        <div id="ruleTextContainer" class="rule-text">
+          <div class="loading"><span class="spinner"></span>正在生成本轮规则…</div>
+        </div>
       </div>
     </section>
 
     <!-- 颜色预览区 -->
     <section class="panel">
       <div class="panel-title">颜色与操作对照</div>
-      <div id="previewGrid" class="preview-grid">
-        <div class="loading"><span class="spinner"></span></div>
+      <div class="panel-body">
+        <div id="previewGrid" class="preview-grid">
+          <div class="loading"><span class="spinner"></span></div>
+        </div>
       </div>
     </section>
 
     <!-- 确认按钮 -->
     <footer class="footer">
-      <button id="btnConfirm" class="btn-confirm" disabled>确认并开始</button>
+      <button id="btnConfirm" class="btn-confirm" disabled> >>>确认并开始 </button>
     </footer>
   </div>
 
@@ -392,7 +330,7 @@
           const re = new RegExp(namePattern, 'g');
           html = html.replace(re, function (match) {
             return (
-              '<span class="hl-color" style="background-color:' + op.hex + ';">' +
+              '<span class="hl-color" style="color:' + op.hex + ';">' +
                 match +
               '</span>'
             );
@@ -413,12 +351,9 @@
       function renderPreview(operationLights) {
         const grid = document.getElementById('previewGrid');
         const fragments = operationLights.map(function (op) {
-          // 使用 CSS 变量传递颜色：--led-color 控制灯芯，--led-halo-shadow 控制外层光晕
-          const halo =
-            '0 0 20px ' + op.hex + '99, 0 0 44px ' + op.hex + '55';
           return (
             '<div class="preview-item">' +
-              '<div class="led on" style="--led-color:' + op.hex + '; --led-halo-shadow:' + halo + ';">' +
+              '<div class="led" style="background-color:' + op.hex + ';">' +
               '</div>' +
               '<div class="preview-info">' +
                 '<div class="color-name" style="color:' + op.hex + ';">' + escapeHTML(op.colorName) + '</div>' +
@@ -488,4 +423,3 @@
 </body>
 </html>
 
-小猴编程（9796306620872061）

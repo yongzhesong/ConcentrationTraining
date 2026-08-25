@@ -8,23 +8,30 @@
     /* ========== 全局重置 & 变量 ========== */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
-      --bg-deep:     #05070d;
-      --bg-panel:    #0c1220;
-      --bg-elev:     #141c33;
-      --border:      #1f2a4a;
-      --border-glow: rgba(60, 140, 255, 0.35);
-      --text-main:   #e6edf5;
-      --text-sub:    #8899b4;
-      --accent:      #3a8cff;
-      --accent-glow: rgba(58, 140, 255, 0.45);
-      --ok:          #3ddc97;
-      --danger:      #ff5c7a;
+      --bg-deep:     #0a0d14;
+      --bg-panel:    #11141a;
+      --bg-elev:     #171b23;
+      --border:      #2a2f3a;
+      --border-glow: rgba(201, 162, 74, 0.3);
+      --text-main:   #f0f2f5;
+      --text-sub:    #8a95a8;
+      /* APXGP 多色配色 */
+      --accent:      #ffd500;  /* 黄 */
+      --red:         #ff3a3a;  /* 红 */
+      --green:       #3ddc97;  /* 绿 */
+      --orange:      #ff8c1a;  /* 橙 */
+      --purple:      #a78bfa;  /* 紫 */
+      --cyan:        #00d4ff;  /* 蓝青 */
+      --white:       #ffffff;  /* 白 */
+      --gray-bar:    #3a3f4a;
     }
     html, body {
       height: 100%; width: 100%;
-      background: radial-gradient(ellipse at top, #0b1530 0%, var(--bg-deep) 60%) no-repeat fixed;
+      background: var(--bg-deep) no-repeat fixed;
       color: var(--text-main);
-      font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: "Bahnschrift", "DIN", "Rajdhani", "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1, "ss01" 1;
       overflow: hidden;
       user-select: none;
       -webkit-user-select: none;
@@ -40,41 +47,62 @@
     /* ========== HUD ========== */
     .hud {
       position: relative; z-index: 5;
-      display: flex; justify-content: space-between; align-items: center;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
       padding: 10px 20px;
     }
     .hud-item {
       background: var(--bg-panel);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 2px;
       padding: 6px 16px;
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .hud-item .label { font-size: 10px; color: var(--text-sub); letter-spacing: 2px; }
-    .hud-item .value { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
-    .hud-item.timer .value { color: var(--accent); }
-    .hud-item.score .value { color: var(--ok); }
-    .hud-item.timer.urgent .value { color: var(--danger); animation: tpulse 0.5s ease-in-out infinite; }
-    @keyframes tpulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .hud-item .label { font-size: 10px; color: var(--text-sub); letter-spacing: 3px; text-transform: uppercase; font-weight: 600; }
+    .hud-item .value { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: 1px; }
+    .hud-item.timer {
+      background: #000;
+      border-color: var(--purple);
+    }
+    .hud-item.timer .label { color: var(--purple); }
+    .hud-item.timer .value { color: var(--purple); }
+    .hud-item.score {
+      background: #000;
+      border-color: var(--accent);
+    }
+    .hud-item.score .label { color: var(--accent); }
+    .hud-item.score .value { color: var(--accent); }
+    .hud-item.status {
+      background: #000;
+      border-color: var(--cyan);
+    }
+    .hud-item.status .label { color: var(--cyan); }
+    .hud-item.status .value { color: var(--cyan); }
+    .hud-item.timer.urgent {
+      border-color: var(--red);
+    }
+    .hud-item.timer.urgent .value { color: var(--red); }
+    .hud-item.timer.urgent .label { color: var(--red); }
 
     /* ========== 规则提示栏 ========== */
     .rule-hint {
       position: relative; z-index: 5;
-      display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
+      display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
       padding: 4px 16px 8px;
     }
     .hint-item {
       display: flex; align-items: center; gap: 6px;
-      background: var(--bg-panel);
+      background: #000;
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 2px;
       padding: 4px 12px;
     }
     .hint-dot {
       width: 12px; height: 12px; border-radius: 50%;
-      box-shadow: 0 0 8px currentColor;
+      border: 1px solid #3a3f4a;
     }
-    .hint-text { font-size: 12px; color: var(--text-sub); }
+    .hint-text { font-size: 11px; color: var(--text-sub); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
 
     /* ========== 游戏区域 ========== */
     .game-area {
@@ -91,7 +119,7 @@
     /* 网格线：用 JS 动态注入到 <div class="grid-lines"> 中 */
     .grid-line-v, .grid-line-h {
       position: absolute;
-      background: rgba(60,140,255,0.18);
+      background: #7a8598;
       pointer-events: none;
       z-index: 0;
     }
@@ -101,44 +129,18 @@
     /* ========== LED 灯 ========== */
     .led {
       position: absolute;
-      width: 6.5%; aspect-ratio: 1;
+      width: 9.75%; aspect-ratio: 1;
       border-radius: 50%;
       transform: translate(-50%, -50%);
-      /* 金属外壳：加厚边框 + 明暗渐变（仿原版灯座厚重感） */
-      background: radial-gradient(circle at 30% 30%, #1f2b4e 0%, #0b1226 55%, #03060e 100%);
-      border: 3px solid #131c38;
-      box-shadow:
-        inset 0 3px 6px rgba(0,0,0,0.8),
-        inset 0 -2px 4px rgba(60, 140, 255, 0.05),
-        0 3px 8px rgba(0,0,0,0.55);
+      background: #333;
+      border: 1px solid #3a3f4a;
       touch-action: none;
       z-index: 1;
       --led-color: transparent;
-      --led-halo: none;
-    }
-    .led::before {
-      content: ""; position: absolute; inset: 16%;
-      border-radius: 50%;
-      background-color: var(--led-color);
-      box-shadow: inset 0 -5px 14px rgba(0,0,0,0.3);
-    }
-    .led::after {
-      content: ""; position: absolute;
-      top: 20%; left: 24%; width: 30%; height: 22%;
-      background: radial-gradient(ellipse, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 70%);
-      border-radius: 50%;
-      pointer-events: none;
     }
     .led.on {
-      border-color: var(--led-color);
-      box-shadow:
-        var(--led-halo),
-        inset 0 3px 6px rgba(0,0,0,0.5),
-        inset 0 -2px 4px rgba(60, 140, 255, 0.15),
-        0 3px 8px rgba(0,0,0,0.55);
-    }
-    .led.on::before {
-      box-shadow: inset 0 -5px 14px rgba(0,0,0,0.15), 0 0 10px var(--led-color);
+      background-color: var(--led-color);
+      border-color: #5a6372;
     }
 
     /* ========== 响应式 ========== */
@@ -172,6 +174,10 @@
       <span class="label">SCORE</span>
       <span class="value" id="scoreValue">0</span>
     </div>
+    <div class="hud-item status" id="statusBox">
+      <span class="label">STATUS</span>
+      <span class="value" id="statusValue">READY</span>
+    </div>
   </div>
 
   <!-- 规则提示栏 -->
@@ -202,13 +208,13 @@
       var GAME_DURATION   = 40;     // 游戏总时长（秒）
       var TIMEOUT_MS      = 1250;   // 操作灯超时：亮起后 1.25 秒内无 mousedown（图片 0.5 秒已按要求改为 1.25 秒）
       var LONG_PRESS_MS   = 500;    // 长按持续时间（按图片要求，0.5 秒只约束「按下时机」后的持续）
-      var DOUBLE_CLICK_MS = 100;    // 双击间隔上限（第一次 mouseup → 第二次 mousedown）
+      var DOUBLE_CLICK_MS = 500;    // 双击间隔上限（第一次触碰 → 第二次触碰，0.5 秒）
       var MIN_INTERVAL    = 10;     // 亮灯间隔下限（毫秒）图片:最少 0.01 秒
       var MAX_INTERVAL    = 500;    // 亮灯间隔上限（毫秒）图片:最长 0.5 秒
-      var MIN_BLANK       = 3000;   // 空白期下限（毫秒）图片:5-10 秒
-      var MAX_BLANK       = 6000;  // 空白期上限（毫秒）图片:5-10 秒
-      var MAX_BLANKS      = 2;      // 最大空白期次数 图片:0-2 次
-      var BLANK_PROB      = 0.05;   // 每次亮灯周期触发空白期的概率（小幅度降低）
+      var MIN_BLANK       = 3000;   // 空白期下限（毫秒）3-6 秒
+      var MAX_BLANK       = 6000;   // 空白期上限（毫秒）3-6 秒
+      var MAX_BLANKS      = 1;      // 最大空白期次数（每轮游戏仅出现 1 次）
+      var BLANK_PROB      = 0.03;   // 每次亮灯周期触发空白期的概率（略微降低）
       var OPERATION_LED_COUNT = 1;  // 每个周期固定 1 个操作灯
       var MAX_DISTRACTION_LEDS = 2; // 每个周期最多 2 个干扰灯
 
@@ -224,7 +230,10 @@
         totalOpLEDs: 0,          // 游戏内亮起操作灯总个数
         isRunning: false,
         isEnded: false,
-        blankPeriodsUsed: 0,
+        blankPeriodsUsed: 0,     // 已触发空白期次数（最多1）
+        inBlankPeriod: false,    // 是否正处于空白期内（防重入锁）
+        willHaveBlank: false,    // 本轮游戏是否会触发空白期（init时3%概率决定）
+        blankScheduledTime: 0,   // 预定触发空白期的时间戳
         leds: [],                // 12 个灯对象
         activeCycle: null,       // 当前亮灯周期 { opLEDs:[], distLEDs:[] }
         pressedLEDs: new Map(),  // pointerId → led（支持多点触控）
@@ -246,6 +255,47 @@
         return a;
       }
       function pick(arr, n) { return shuffle(arr).slice(0, n); }
+
+      // ============================================================
+      // 3.5 音效系统（Web Audio API 自制蜂鸣）
+      //   成功 = 偏高频蜂鸣（660Hz）
+      //   失败 = 偏低频蜂鸣（440Hz）
+      //   频率比 3:2，差距适中；风格简洁：单音、无混响
+      // ============================================================
+      var audioCtx = null;
+      function ensureAudio() {
+        if (!audioCtx) {
+          try {
+            var AC = window.AudioContext || window.webkitAudioContext;
+            if (AC) audioCtx = new AC();
+          } catch (e) { audioCtx = null; }
+        }
+        // 某些浏览器需在用户交互后恢复
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        return audioCtx;
+      }
+      // freq: 频率(Hz)，duration: 持续时间(秒)
+      function beep(freq, duration) {
+        var ctx = ensureAudio();
+        if (!ctx) return;
+        var now = ctx.currentTime;
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = 'square';          // 方波 = 简洁蜂鸣感
+        osc.frequency.value = freq;
+        // 起音快、收尾平滑，避免咔哒爆音
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.18, now + 0.008);    // 8ms 起音
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration); // 衰减
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + duration + 0.02);
+      }
+      function playSuccessSfx() { beep(660, 0.15); }   // 偏高频蜂鸣
+      function playFailSfx()    { beep(440, 0.18); }   // 偏低频蜂鸣
 
       // ============================================================
       // 4. 读取规则（与 rule.HTML 传递的一致）
@@ -334,7 +384,6 @@
         var el = led.element;
         el.classList.add('on');
         el.style.setProperty('--led-color', color);
-        el.style.setProperty('--led-halo', '0 0 16px ' + color + 'cc, 0 0 36px ' + color + '66');
         // 操作灯启动超时计时器（0.5 秒内无 mousedown → 超时）
         if (type === 'operation') {
           var t = setTimeout(function () { onTimeout(led); }, TIMEOUT_MS);
@@ -350,7 +399,6 @@
         var el = led.element;
         el.classList.remove('on');
         el.style.setProperty('--led-color', 'transparent');
-        el.style.setProperty('--led-halo', 'none');
       }
 
       function clearLEDTimers(led) {
@@ -376,13 +424,24 @@
         var elapsed = (Date.now() - game.startTime) / 1000;
         if (elapsed >= game.totalTime) { endGame(); return; }
 
-        // 随机决定是否插入空白期（0~2 次，5~10 秒）
-        if (game.blankPeriodsUsed < MAX_BLANKS && Math.random() < BLANK_PROB) {
+        // 空白期：本轮游戏是否预定了空白期，且已到达预定时间点
+        // 每轮3%概率，仅触发1次，触发后不可再触发
+        if (game.willHaveBlank
+            && !game.inBlankPeriod
+            && game.blankPeriodsUsed < MAX_BLANKS
+            && Date.now() >= game.blankScheduledTime) {
+          game.inBlankPeriod = true;
           game.blankPeriodsUsed++;
+          updateStatus('BLANK', 'var(--orange)');
           var blankMs = rand(MIN_BLANK, MAX_BLANK);
           var blankStart = Date.now();
+          if (game.nextCycleTimer) { clearTimeout(game.nextCycleTimer); game.nextCycleTimer = null; }
           game.nextCycleTimer = setTimeout(function () {
+            game.nextCycleTimer = null;
+            if (game.isEnded || !game.isRunning) { game.inBlankPeriod = false; return; }
             game.blankTime += (Date.now() - blankStart) / 1000;
+            game.inBlankPeriod = false;
+            updateStatus('READY', 'var(--cyan)');
             startNextCycle();
           }, blankMs);
           return;
@@ -504,27 +563,24 @@
       }
 
       // --- 双击 ---
+      // 新逻辑：第一次触碰停止超时计时，开启 0.5 秒新计时；
+      //        0.5 秒内有第二次触碰 → 成功；0.5 秒内无第二次触碰 → 失败
       function handleDblClickDown(led) {
         if (led.state === 'waiting') {
-          // 第一次按下
+          // 第一次触碰：停止当前（超时）计时，开启 0.5 秒新计时
           clearLEDTimers(led);
           led.state = 'pressed1';
-          var t = setTimeout(function () { failLED(led); }, TIMEOUT_MS); // 长按 = 错误
+          var t = setTimeout(function () { failLED(led); }, DOUBLE_CLICK_MS);
           led.timers.push(t);
-        } else if (led.state === 'released1') {
-          // 第二次按下（在 0.1 秒内）→ 成功
+        } else if (led.state === 'pressed1') {
+          // 第二次触碰（0.5 秒内）→ 成功
           clearLEDTimers(led);
           successLED(led);
         }
       }
       function handleDblClickUp(led) {
-        if (led.state === 'pressed1') {
-          clearLEDTimers(led);
-          led.state = 'released1';
-          // 启动 0.1 秒计时器，等待第二次按下
-          var t = setTimeout(function () { failLED(led); }, DOUBLE_CLICK_MS);
-          led.timers.push(t);
-        }
+        // 新逻辑下，松手不改变状态、不重置计时器，
+        // 0.5 秒计时从第一次触碰开始持续运行
       }
 
       // --- 长按 ---
@@ -545,12 +601,26 @@
       }
 
       // --- 成功 / 失败 ---
+      function updateStatus(text, color) {
+        var el = document.getElementById('statusValue');
+        if (!el) return;
+        el.textContent = text;
+        el.style.color = color || '';
+        var box = document.getElementById('statusBox');
+        if (box) {
+          box.style.borderColor = color ? color : '';
+          var lbl = box.querySelector('.label');
+          if (lbl) lbl.style.color = color ? color : '';
+        }
+      }
       function successLED(led) {
         if (led.state === 'done' || led.state === 'off') return;
         clearLEDTimers(led);
         led.state = 'done';
         game.score++;
         updateScore();
+        playSuccessSfx();   // 高频短蜂鸣
+        updateStatus('OK', 'var(--green)');
         turnOffLED(led);
         onOperationLEDDone(led);
       }
@@ -558,6 +628,8 @@
         if (led.state === 'done' || led.state === 'off') return;
         clearLEDTimers(led);
         led.state = 'done';
+        playFailSfx();      // 低频短蜂鸣
+        updateStatus('ERR', 'var(--red)');
         turnOffLED(led);
         onOperationLEDDone(led);
       }
@@ -596,17 +668,40 @@
         game.leds.forEach(function (led) { if (led.state !== 'off') turnOffLED(led); });
         // 计算实际游戏时间（扣除空白期）
         var actualGameTime = game.totalTime - game.blankTime;
+        // 计算最终成绩（与 result.HTML 公式一致）
+        var safeTime = Math.max(0.001, actualGameTime);
+        var safeLEDs = Math.max(1, game.totalOpLEDs);
+        var speedRatio = game.score / safeTime;
+        var accuracyRatio = game.score / safeLEDs;
+        var finalScore = Math.max(0, speedRatio * Math.pow(accuracyRatio, 2) * 1000);
+        var accuracyPct = Math.min(100, accuracyRatio * 100);
         // 保存结果
         var result = {
           score: game.score,
           actualGameTime: actualGameTime,
           totalOpLEDs: game.totalOpLEDs,
+          finalScore: finalScore,
+          accuracy: accuracyPct,
         };
         try {
           localStorage.setItem('batak.gameResult', JSON.stringify(result));
         } catch (e) {
           try { sessionStorage.setItem('batak.gameResult', JSON.stringify(result)); } catch (e2) {}
         }
+        // 保存历史记录（最多保留 20 条）
+        try {
+          var history = JSON.parse(localStorage.getItem('batak.history') || '[]');
+          history.push({
+            finalScore: finalScore,
+            accuracy: accuracyPct,
+            score: game.score,
+            actualGameTime: actualGameTime,
+            totalOpLEDs: game.totalOpLEDs,
+            ts: Date.now()
+          });
+          if (history.length > 20) history = history.slice(-20);
+          localStorage.setItem('batak.history', JSON.stringify(history));
+        } catch (e) {}
         // 延迟跳转（让玩家看到最后状态）
         setTimeout(function () { window.location.href = './result.html'; }, 600);
       }
@@ -617,9 +712,9 @@
       function renderRuleHint() {
         var hint = document.getElementById('ruleHint');
         var items = game.rule.operationLights.map(function (op) {
-          return '<div class="hint-item">' +
-            '<div class="hint-dot" style="background:' + op.hex + '; color:' + op.hex + ';"></div>' +
-            '<span class="hint-text">' + op.actionName + '</span>' +
+          return '<div class="hint-item" style="border-color:' + op.hex + ';">' +
+            '<div class="hint-dot" style="background:' + op.hex + ';"></div>' +
+            '<span class="hint-text" style="color:' + op.hex + ';">' + op.actionName + '</span>' +
           '</div>';
         });
         hint.innerHTML = items.join('');
@@ -648,6 +743,11 @@
         preventConflicts();
         game.isRunning = true;
         game.isEnded = false;
+        // 空白期：每轮3%概率决定是否触发，若触发则在游戏进行 10~25 秒间随机插入
+        game.willHaveBlank = Math.random() < BLANK_PROB;
+        if (game.willHaveBlank) {
+          game.blankScheduledTime = Date.now() + rand(10000, 25000);
+        }
         startTimer();
         startNextCycle();
       }
