@@ -15,7 +15,7 @@
       --text-main:#f0f2f5;
       --text-sub: #8a95a8;
       /* APXGP 多色配色 */
-      --accent:   #ffd500;  /* 黄 */
+      --accent:   #fbbd05bf;  /* 黄 */
       --red:      #ff3a3a;  /* 红 */
       --green:    #3ddc97;  /* 绿 */
       --orange:   #ff8c1a;  /* 橙 */
@@ -63,8 +63,8 @@
     .tag {
       display: inline-flex; align-items: center; gap: 6px;
       background: transparent;
-      border: 1px solid var(--red);
-      color: var(--red);
+      border: 1px solid var(--purple);
+      color: var(--purple);
       font-size: 12px; letter-spacing: 4px;
       text-transform: uppercase;
       font-weight: 600;
@@ -109,8 +109,8 @@
     .stat-box.time .val { color: var(--white); }
     .stat-box.leds { border-color: var(--orange); }
     .stat-box.leds .val { color: var(--orange); }
-    .stat-box.correct { border-color: var(--cyan); }
-    .stat-box.correct .val { color: var(--cyan); }
+    .stat-box.correct { border-color: var(--green); }
+    .stat-box.correct .val { color: var(--green); }
 
     /* ========== 图表区 ========== */
     .chart-block {
@@ -172,17 +172,17 @@
       gap: 8px;
       width: 100%; max-width: 400px;
       padding: 18px 28px;
-      background: #0a0d14;
-      color: var(--accent);
+      background: var(--accent);
+      color: #000;
       border: 1px solid var(--accent);
-      border-radius: 2px;
+      border-radius: 4px;
       font-size: 16px; font-weight: 700;
       letter-spacing: 3px; text-transform: uppercase;
       cursor: pointer;
       transition: background 0.15s ease, color 0.15s ease;
     }
-    .btn-restart:hover { background: #1a1f2e; }
-    .btn-restart:active { background: #050810; }
+    .btn-restart:hover { background: #e6a800; border-color: #e6a800; }
+    .btn-restart:active { background: #cc9400; border-color: #cc9400; }
     .btn-restart svg { width: 18px; height: 18px; }
 
     /* ========== 响应式 ========== */
@@ -592,7 +592,7 @@
           try { localStorage.removeItem('batak.gameResult'); } catch (e) {}
           document.body.style.transition = 'opacity 0.2s ease';
           document.body.style.opacity = '0';
-          setTimeout(function () { window.location.href = './rule.html'; }, 200);
+          setTimeout(function () { window.location.href = './index.html'; }, 200);
         });
       }
 
