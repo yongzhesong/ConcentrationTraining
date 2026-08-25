@@ -727,9 +727,24 @@
         document.addEventListener('contextmenu',  function (e) { e.preventDefault(); });
         document.addEventListener('selectstart',  function (e) { e.preventDefault(); });
         document.addEventListener('dragstart',    function (e) { e.preventDefault(); });
-        document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+        // Safari 双指缩放完整拦截（gesture 事件为 Safari 专属）
+        document.addEventListener('gesturestart',  function (e) { e.preventDefault(); });
+        document.addEventListener('gesturechange', function (e) { e.preventDefault(); });
+        document.addEventListener('gestureend',    function (e) { e.preventDefault(); });
+        // 多指 touchmove 直接拦截（防止 Safari 触发缩放）
+        document.addEventListener('touchmove', function (e) {
+          if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
+        // 多指 touchstart 拦截
         document.addEventListener('touchstart', function (e) {
           if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
+        // 双击缩放拦截（全部拦截，防止误触）
+        var lastTouchEnd = 0;
+        document.addEventListener('touchend', function (e) {
+          var now = Date.now();
+          if (now - lastTouchEnd <= 350) e.preventDefault();
+          lastTouchEnd = now;
         }, { passive: false });
       }
 
@@ -759,6 +774,10 @@
       }
     })();
   </script>
+</body>
+</html>
+
+
 </body>
 </html>
 
